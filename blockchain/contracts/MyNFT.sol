@@ -12,7 +12,7 @@ contract MyNFT is ERC721URIStorage, Ownable {
     event NFTMinted(address indexed to, uint256 indexed tokenId, string tokenURI);
 
     constructor() ERC721("MyNFT", "MNFT") {
-        tokenCounter = 0;
+        tokenCounter = 1;
     }
 
     /**
