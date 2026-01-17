@@ -2,7 +2,7 @@
 
 import Marketplace from "@/src/components/Marketplace";
 
-export default function TestProduct() {
+export default function TestProductPage() {
   return (
     <main>
       <Marketplace />

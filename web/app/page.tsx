@@ -5,7 +5,7 @@ import { RolePopup } from "@/src/components/RolePopup";
 import { ADMIN_WALLET } from "@/src/contracts";
 import { useHomepage } from "@/src/hooks/useHomepage";
 
-export default function GuestHome() {
+export default function GuestHomePage() {
 
   const { totalSupply, openRolePopup, isMetaMaskAlertOpen, handleInstallMetaMask, handleConnectMetaMask, address, isRolePopupOpen, closeRolePopup} = useHomepage()
 

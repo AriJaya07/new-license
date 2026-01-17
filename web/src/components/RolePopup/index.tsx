@@ -64,7 +64,7 @@ export const RolePopup: React.FC<RolePopupProps> = ({
   };
 
   const goUser = () => {
-    router.push("/user-submit");
+    router.push("/user-form");
   };
 
   const onBackdropMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
