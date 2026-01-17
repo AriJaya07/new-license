@@ -1,5 +1,7 @@
 export type Address = `0x${string}`;
 
+export const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
+
 export const ADDRESSES = {
   myNFT: process.env.NEXT_PUBLIC_MYNFT_ADDRESS as Address,
   marketplace: process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS as Address,
