@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useReadContract } from "wagmi";
-import { ADDRESSES, Listing, MarketplaceAbi, MyNFTAbi } from "../contracts";
+import { ADDRESSES, ERC721Abi, Listing, MarketplaceAbi, MyNFTAbi } from "../contracts";
+import { ethers } from "ethers";
 
 export const useMyNFTRead = () => {
   const { data } = useReadContract({
@@ -17,30 +18,43 @@ export const useMyNFTRead = () => {
 };
 
 export const useListMarketplaceRead = () => {
-  const [listings, setListings] = useState<any[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const providerContract = process.env.NEXT_PUBLIC_PROVIDER_CONTRACT
 
+  // Read contract: getAllListings
   const { data, isLoading, isError, refetch } = useReadContract({
-    address: ADDRESSES.marketplace,
+    address: ADDRESSES.marketplace, // Replace with the correct contract address
     abi: MarketplaceAbi,
-    // functionName: "getAllListings",
+    functionName: "getAllListings",
   });
 
   useEffect(() => {
-    if (data) {
-      console.log("Raw data from contract:", data);
+    const fetchTokenURIs = async () => {
+      if (data) {
+        // Use Promise.all to fetch tokenURI for each listing in parallel
+        const listingsData = await Promise.all(
+          data.map(async (listing: any) => {
+            const provider = new ethers.JsonRpcProvider(providerContract); // Use local Ethereum node
+            const nftContract = new ethers.Contract(listing.nftContract, ERC721Abi, provider);
+            const tokenURI = await nftContract.tokenURI(listing.tokenId);
 
-      // Map the data according to the actual Listing struct from your contract
-      // Listing struct: { nftContract, tokenId, seller, price, active }
-    //   const listingsData = data.map((listing: any) => ({
-    //     nftContract: listing.nftContract,
-    //     tokenId: listing.tokenId,
-    //     seller: listing.seller,
-    //     price: listing.price, 
-    //     active: listing.active,
-    //   }));
+            return {
+              nftContract: listing.nftContract,
+              tokenId: listing.tokenId.toString(),
+              seller: listing.seller,
+              // price: ethers.utils.formatEther(listing.price.toString()), // Format price in ETH
+              price: listing.price.toString(), // Format price in ETH
+              active: listing.active,
+              tokenURI, // Store token URI
+            };
+          })
+        );
 
-    //   setListings(listingsData);
-    }
+        setListings(listingsData);
+      }
+    };
+
+    fetchTokenURIs();
   }, [data]);
 
   return {

@@ -108,7 +108,31 @@ export const MarketplaceAbi = [
       },
     ],
   },
+  {
+    type: "function",
+    name: "getAllListings",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "tuple[]",
+        components: [
+          { name: "nftContract", type: "address" },
+          { name: "tokenId", type: "uint256" },
+          { name: "seller", type: "address" },
+          { name: "price", type: "uint256" },
+          { name: "active", type: "bool" },
+        ],
+      },
+    ],
+  },
 ] as const;
+
+// ERC721 ABI to call `tokenURI`
+export const ERC721Abi = [
+  "function tokenURI(uint256 tokenId) external view returns (string memory)",
+];
 
 
 export type Listing = {
@@ -117,4 +141,5 @@ export type Listing = {
     seller: Address;
     price: bigint;
     active: boolean;
+    tokenURI: string;
 }
