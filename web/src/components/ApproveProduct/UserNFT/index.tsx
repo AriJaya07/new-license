@@ -43,6 +43,9 @@ import {
       setNftData,
       setIsApproved,
       setIsListed,
+      listTokenId,
+      setListTokenId,
+      listNFT,
     } = useApproveProduct();
   
     const [copied, setCopied] = useState(false);
@@ -178,35 +181,6 @@ import {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <CustomLabel htmlFor="contract">Contract Address</CustomLabel>
-                    <Tooltip
-                      content="The Ethereum address of the NFT smart contract (starts with 0x)"
-                      contentClassName="max-w-xs"
-                    >
-                      <Info className="w-4 h-4 text-muted-foreground" />
-                    </Tooltip>
-                  </div>
-                  <Input
-                    id="contract"
-                    placeholder="0x..."
-                    value={contractAddress}
-                    onChange={(e) => setContractAddress(e.target.value)}
-                    className={
-                      errors.contractAddress
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }
-                    disabled={nftVerified}
-                  />
-                  {errors.contractAddress && (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.contractAddress}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
                     <CustomLabel htmlFor="tokenId">Token ID</CustomLabel>
                     <Tooltip
                       content="The unique identifier of your NFT within the collection"
@@ -235,61 +209,10 @@ import {
                     </p>
                   )}
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <CustomLabel htmlFor="price">Listing Price</CustomLabel>
-                    <Tooltip
-                      content="Set the price you want to sell your NFT for"
-                      contentClassName="max-w-xs"
-                    >
-                      <Info className="w-4 h-4 text-muted-foreground" />
-                    </Tooltip>
-                  </div>
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.001"
-                    min="0.001"
-                    placeholder="Price in ETH"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className={
-                      errors.price
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }
-                  />
-                  {errors.price && (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.price}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-3 p-4 bg-muted/50 rounded-xl">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Marketplace Fee (2.5%)
-                    </span>
-                    <span className="font-mono text-foreground">
-                      -{marketplaceFee} ETH
-                    </span>
-                  </div>
-                  <div className="border-t border-border pt-3">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-foreground">
-                        You Receive
-                      </span>
-                      <span className="font-mono font-bold text-emerald-500">
-                        {sellerReceives} ETH
-                      </span>
-                    </div>
-                  </div>
-                </div>
                 {!nftVerified ? (
                   <Button
                     onClick={verifyNFT}
-                    disabled={isVerifying || !contractAddress || !tokenId}
+                    disabled={isVerifying || !tokenId}
                     className="w-full bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white"
                   >
                     {isVerifying ? (
@@ -346,6 +269,107 @@ import {
                     <span className="text-sm">NFT Preview</span>
                   </div>
                 )}
+              </div>
+              <div>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <CustomLabel htmlFor="price">Token ID untuk Listing</CustomLabel>
+                    <Tooltip
+                      content="Set the price you want to sell your NFT for"
+                      contentClassName="max-w-xs"
+                    >
+                      <Info className="w-4 h-4 text-muted-foreground" />
+                    </Tooltip>
+                  </div>
+                  <Input
+                    id="listTokenId"
+                    type="number"
+                    step="0.001"
+                    min="0.001"
+                    placeholder="Token Id..."
+                    value={listTokenId}
+                    onChange={(e) => setListTokenId(e.target.value)}
+                    className={
+                      errors.listTokenId
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }
+                  />
+                  {errors.listTokenId && (
+                    <p className="text-sm text-red-500 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.listTokenId}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <CustomLabel htmlFor="price">Listing Price</CustomLabel>
+                    <Tooltip
+                      content="Set the price you want to sell your NFT for"
+                      contentClassName="max-w-xs"
+                    >
+                      <Info className="w-4 h-4 text-muted-foreground" />
+                    </Tooltip>
+                  </div>
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.001"
+                    min="0.001"
+                    placeholder="Price in ETH"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    className={
+                      errors.price
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }
+                  />
+                  {errors.price && (
+                    <p className="text-sm text-red-500 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.price}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-3 p-4 bg-muted/50 rounded-xl">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      Marketplace Fee (2.5%)
+                    </span>
+                    <span className="font-mono text-foreground">
+                      -{marketplaceFee} ETH
+                    </span>
+                  </div>
+                  <div className="border-t border-border pt-3">
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground">
+                        You Receive
+                      </span>
+                      <span className="font-mono font-bold text-emerald-500">
+                        {sellerReceives} ETH
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <Button
+                    onClick={listNFT}
+                    disabled={isVerifying || !tokenId}
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white"
+                  >
+                    {isVerifying ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Verifying...
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-4 h-4 mr-2" />
+                        List NFT
+                      </>
+                    )}
+                  </Button>
               </div>
             </div>
           </div>

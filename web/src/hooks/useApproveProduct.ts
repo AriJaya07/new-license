@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import { toBigIntSafe } from "../utils/common";
+import { ADDRESSES, MarketplaceAbi, MyNFTAbi } from "../contracts";
+import { useWriteContract } from "wagmi";
+import { parseEther } from "viem";
 
 type ToastType = "success" | "error" | "info";
 type ToastState = {
@@ -18,30 +22,34 @@ type ModalState = {
 };
 
 export function useApproveProduct() {
+
+  const { writeContractAsync } = useWriteContract();
+
   // Wallet state
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
-  const [network, setNetwork] = useState("Ethereum Mainnet");
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
+  const [walletAddress, setWalletAddress] = useState<string>("");
+  const [network, setNetwork] = useState<string>("Ethereum Mainnet");
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
 
   // NFT state
-  const [contractAddress, setContractAddress] = useState("");
-  const [tokenId, setTokenId] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [nftVerified, setNftVerified] = useState(false);
+  const [contractAddress, setContractAddress] = useState<string>("");
+  const [tokenId, setTokenId] = useState<string>("");
+  const [listTokenId, setListTokenId] = useState<string>("")
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [nftVerified, setNftVerified] = useState<boolean>(false);
   const [nftData, setNftData] = useState<any>(null);
 
   // Approval state
-  const [isApproved, setIsApproved] = useState(false);
-  const [isApproving, setIsApproving] = useState(false);
+  const [isApproved, setIsApproved] = useState<boolean>(false);
+  const [isApproving, setIsApproving] = useState<boolean>(false);
 
   // Listing state
-  const [price, setPrice] = useState("");
-  const [isListing, setIsListing] = useState(false);
-  const [isListed, setIsListed] = useState(false);
+  const [price, setPrice] = useState<string>("");
+  const [isListing, setIsListing] = useState<boolean>(false);
+  const [isListed, setIsListed] = useState<boolean>(false);
 
   // UI state
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState<number>(1);
   const [toast, setToast] = useState<ToastState>({
     show: false,
     type: "",
@@ -122,11 +130,9 @@ export function useApproveProduct() {
   // Mock NFT verification (same behavior)
   const verifyNFT = async () => {
     const newErrors: any = {};
+    const approveTokenId = toBigIntSafe(tokenId);
 
-    if (!validateContractAddress(contractAddress)) {
-      newErrors.contractAddress = "Invalid contract address format";
-    }
-    if (!tokenId || parseInt(tokenId) < 0) {
+    if (!approveTokenId) {
       newErrors.tokenId = "Please enter a valid token ID";
     }
 
@@ -139,18 +145,26 @@ export function useApproveProduct() {
     setIsVerifying(true);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
+    const hash = await writeContractAsync({
+      address: ADDRESSES.myNFT,
+      abi: MyNFTAbi,
+      functionName: "approve",
+      args: [ADDRESSES.marketplace, approveTokenId],
+    });
+
+
     // Mock NFT data (same)
     setNftData({
-      name: "Cosmic Voyager #" + tokenId,
+      name: "Cosmic Voyager #" + approveTokenId,
       collection: "Cosmic Voyagers",
-      image: "https://placehold.co/400x400/1a1a2e/eaeaea?text=NFT+" + tokenId,
+      image: "https://placehold.co/400x400/1a1a2e/eaeaea?text=NFT+" + approveTokenId,
     });
     setNftVerified(true);
     setIsVerifying(false);
     showToast(
       "success",
       "NFT Verified",
-      "Ownership confirmed for token #" + tokenId
+      "Ownership confirmed for token #" + approveTokenId
     );
   };
 
@@ -188,6 +202,16 @@ export function useApproveProduct() {
     setIsListing(true);
 
     await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const tokenId = toBigIntSafe(listTokenId);
+    const priceWei = parseEther(price || "0");
+
+    const hash = await writeContractAsync({
+      address: ADDRESSES.marketplace,
+      abi: MarketplaceAbi,
+      functionName: "listNFT",
+      args: [ADDRESSES.myNFT, tokenId, priceWei],
+    });
 
     const success = Math.random() > 0.1;
 
@@ -279,5 +303,8 @@ export function useApproveProduct() {
     validatePrice,
     listNFT,
     showToast,
+
+    listTokenId,
+    setListTokenId,
   };
 }
