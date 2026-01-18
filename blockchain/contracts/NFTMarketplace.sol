@@ -199,6 +199,13 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
     }
 
     /**
+     * @dev get list fee marketplace
+     */
+    function getMarketplaceFee() external view returns (uint256) {
+        return marketplaceFee;
+    }
+
+    /**
      * @dev Withdraw accumulated fees (only owner)
      */
     function withdrawFees() external onlyOwner {
@@ -218,6 +225,20 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
         returns (Listing memory) 
     {
         return listings[listingId];
+    }
+
+    /**
+     * @dev get all listing
+     */
+    function getAllListings() external view returns (Listing[] memory) {
+        uint256 count = _listingIdCounter - 1;
+        Listing[] memory items = new Listing[](count);
+
+        for (uint256 i = 1; i <= count; i++) {
+            items[i - 1] = listings[i];
+        }
+
+        return items;
     }
 
     /**
