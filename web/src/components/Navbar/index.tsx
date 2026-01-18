@@ -23,18 +23,20 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   const navLinks = [
-    { name: "My NFTs", path: "/profile" },
+    { name: "My NFTs", path: "/my-nfts" },
     { name: "Marketplace", path: "/marketplace" },
     { name: "Form Submit", path: "/user-form" },
     { name: "Admin", path: "/admin" },
+    { name: "Profile", path: "/profile"},
   ];
 
   const mobileLinks = [
     { name: "Home", path: "/" },
-    { name: "My NFTs", path: "/profile" },
+    { name: "My NFTs", path: "/my-nfts" },
     { name: "Marketplace", path: "/marketplace" },
     { name: "Form Submit", path: "/user-form" },
     { name: "Admin", path: "/admin" },
+    { name: "Profile", path: "/profile"},
   ];
 
   const isActive = (path: string) => pathname === path;
