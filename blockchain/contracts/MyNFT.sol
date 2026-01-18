@@ -12,7 +12,7 @@ contract MyNFT is ERC721URIStorage, Ownable {
     event NFTMinted(address indexed to, uint256 indexed tokenId, string tokenURI);
 
     constructor() ERC721("MyNFT", "MNFT") {
-        tokenCounter = 1;
+        tokenCounter = 0; // start counter at 0
     }
 
     /**
@@ -24,14 +24,13 @@ contract MyNFT is ERC721URIStorage, Ownable {
         require(to != address(0), "Cannot mint to zero address");
         require(bytes(tokenURI).length > 0, "Token URI cannot be empty");
 
+        tokenCounter++;
         uint256 newItemId = tokenCounter;
+
         _safeMint(to, newItemId);
         _setTokenURI(newItemId, tokenURI);
         
-        tokenCounter++;
-
         emit NFTMinted(to, newItemId, tokenURI);
-
         return newItemId;
     }
 

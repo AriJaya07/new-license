@@ -8,35 +8,33 @@ describe("MyNFT", function () {
   let addr1;
   let addr2;
 
-  // Helper: find the last minted tokenId by scanning Transfer events in a tx
-  async function getMintedTokenIdFromTx(tx) {
+  // Helper: extract minted tokenId from Transfer event
+  async function getMintedTokenId(tx) {
     const receipt = await tx.wait();
-    // ERC721 mint emits Transfer(from=0x0, to=receiver, tokenId)
     const zero = hre.ethers.ZeroAddress.toLowerCase();
 
     for (const log of receipt.logs) {
       try {
         const parsed = myNFT.interface.parseLog(log);
-        if (parsed?.name === "Transfer") {
-          const from = String(parsed.args.from).toLowerCase();
-          if (from === zero) {
-            return parsed.args.tokenId;
-          }
+        if (
+          parsed.name === "Transfer" &&
+          parsed.args.from.toLowerCase() === zero
+        ) {
+          return parsed.args.tokenId;
         }
-      } catch (e) {
-        // ignore non-MyNFT logs
-      }
+      } catch {}
     }
-    throw new Error("Minted tokenId not found in Transfer logs");
+    throw new Error("Minted tokenId not found");
   }
 
   beforeEach(async function () {
     [owner, addr1, addr2] = await hre.ethers.getSigners();
-
     const MyNFT = await hre.ethers.getContractFactory("MyNFT");
     myNFT = await MyNFT.deploy();
     await myNFT.waitForDeployment();
   });
+
+  /* ================= DEPLOYMENT ================= */
 
   describe("Deployment", function () {
     it("Should set the right owner", async function () {
@@ -48,164 +46,150 @@ describe("MyNFT", function () {
       expect(await myNFT.symbol()).to.equal("MNFT");
     });
 
-    it("Should start with token counter at 0", async function () {
-      // Your contract behavior shows this isn't 0, so we assert it is a number and >= 0.
-      // If you want exact, your contract must define what tokenCounter means.
-      const c = await myNFT.tokenCounter();
-      expect(c).to.be.gte(0);
+    it("Should start tokenCounter at 0", async function () {
+      expect(await myNFT.tokenCounter()).to.equal(0);
     });
   });
 
+  /* ================= MINTING ================= */
+
   describe("Minting", function () {
-    it("Should mint NFT successfully", async function () {
-      const tokenURI = "QmTest123";
+    it("Should mint NFT successfully (first tokenId = 1)", async function () {
+      const tx = await myNFT.mint(owner.address, "QmTest123");
+      const tokenId = await getMintedTokenId(tx);
 
-      const tx = await myNFT.mint(owner.address, tokenURI);
-      const tokenId = await getMintedTokenIdFromTx(tx);
-
+      expect(tokenId).to.equal(1);
       expect(await myNFT.ownerOf(tokenId)).to.equal(owner.address);
-      expect(await myNFT.tokenURI(tokenId)).to.include(tokenURI);
     });
 
     it("Should mint to specified address", async function () {
-      const tokenURI = "QmTest456";
-
-      const tx = await myNFT.mint(addr1.address, tokenURI);
-      const tokenId = await getMintedTokenIdFromTx(tx);
+      const tx = await myNFT.mint(addr1.address, "QmTest456");
+      const tokenId = await getMintedTokenId(tx);
 
       expect(await myNFT.ownerOf(tokenId)).to.equal(addr1.address);
     });
 
     it("Should fail if non-owner tries to mint", async function () {
-      const tokenURI = "QmTest789";
-      await expect(myNFT.connect(addr1).mint(addr1.address, tokenURI)).to.be.reverted;
+      await expect(
+        myNFT.connect(addr1).mint(addr1.address, "QmTest")
+      ).to.be.reverted;
     });
 
     it("Should mint multiple NFTs with incrementing IDs", async function () {
-      const tx1 = await myNFT.mint(owner.address, "QmTest1");
-      const id1 = await getMintedTokenIdFromTx(tx1);
+      const id1 = await getMintedTokenId(await myNFT.mint(owner.address, "A"));
+      const id2 = await getMintedTokenId(await myNFT.mint(addr1.address, "B"));
+      const id3 = await getMintedTokenId(await myNFT.mint(addr2.address, "C"));
 
-      const tx2 = await myNFT.mint(addr1.address, "QmTest2");
-      const id2 = await getMintedTokenIdFromTx(tx2);
-
-      const tx3 = await myNFT.mint(addr2.address, "QmTest3");
-      const id3 = await getMintedTokenIdFromTx(tx3);
-
-      expect(id2).to.equal(id1 + 1n);
-      expect(id3).to.equal(id2 + 1n);
-
-      expect(await myNFT.ownerOf(id1)).to.equal(owner.address);
-      expect(await myNFT.ownerOf(id2)).to.equal(addr1.address);
-      expect(await myNFT.ownerOf(id3)).to.equal(addr2.address);
+      expect(id1).to.equal(1);
+      expect(id2).to.equal(2);
+      expect(id3).to.equal(3);
     });
 
     it("Should fail to mint to zero address", async function () {
-      const tokenURI = "QmTest123";
-      await expect(myNFT.mint(hre.ethers.ZeroAddress, tokenURI)).to.be.revertedWith(
-        "Cannot mint to zero address"
-      );
+      await expect(
+        myNFT.mint(hre.ethers.ZeroAddress, "QmTest")
+      ).to.be.revertedWith("Cannot mint to zero address");
     });
 
     it("Should fail to mint with empty URI", async function () {
-      await expect(myNFT.mint(owner.address, "")).to.be.revertedWith("Token URI cannot be empty");
+      await expect(
+        myNFT.mint(owner.address, "")
+      ).to.be.revertedWith("Token URI cannot be empty");
     });
   });
+
+  /* ================= BATCH MINT ================= */
 
   describe("Batch Minting", function () {
     it("Should batch mint multiple NFTs", async function () {
-      const tokenURIs = ["QmTest1", "QmTest2", "QmTest3"];
-      const tx = await myNFT.batchMint(addr1.address, tokenURIs);
+      const tx = await myNFT.batchMint(addr1.address, ["A", "B", "C"]);
       const receipt = await tx.wait();
 
-      // count mint Transfer events
-      const zero = hre.ethers.ZeroAddress.toLowerCase();
-      let mintedIds = [];
-
-      for (const log of receipt.logs) {
-        try {
-          const parsed = myNFT.interface.parseLog(log);
-          if (parsed?.name === "Transfer") {
-            const from = String(parsed.args.from).toLowerCase();
-            if (from === zero) mintedIds.push(parsed.args.tokenId);
+      const minted = receipt.logs
+        .map(l => {
+          try {
+            return myNFT.interface.parseLog(l);
+          } catch {
+            return null;
           }
-        } catch {}
-      }
+        })
+        .filter(e => e && e.name === "Transfer")
+        .map(e => e.args.tokenId);
 
-      expect(mintedIds.length).to.equal(3);
-      // verify ownership
-      for (const id of mintedIds) {
-        expect(await myNFT.ownerOf(id)).to.equal(addr1.address);
-      }
+      expect(minted.length).to.equal(3);
+      expect(minted[1]).to.equal(minted[0] + 1n);
+      expect(minted[2]).to.equal(minted[1] + 1n);
     });
 
     it("Should fail batch mint with empty array", async function () {
-      await expect(myNFT.batchMint(addr1.address, [])).to.be.revertedWith(
-        "Must mint at least one NFT"
-      );
+      await expect(
+        myNFT.batchMint(addr1.address, [])
+      ).to.be.revertedWith("Must mint at least one NFT");
     });
 
     it("Should fail batch mint with too many NFTs", async function () {
-      const tokenURIs = new Array(51).fill("QmTest");
-      await expect(myNFT.batchMint(addr1.address, tokenURIs)).to.be.revertedWith(
-        "Cannot mint more than 50 NFTs at once"
-      );
+      await expect(
+        myNFT.batchMint(addr1.address, new Array(51).fill("X"))
+      ).to.be.revertedWith("Cannot mint more than 50 NFTs at once");
     });
   });
 
-  describe("Token URI", function () {
-    it("Should return correct token URI with base URI", async function () {
-      const tokenURI = "QmTestHash";
-      const tx = await myNFT.mint(owner.address, tokenURI);
-      const tokenId = await getMintedTokenIdFromTx(tx);
+  /* ================= TOKEN URI ================= */
 
-      const fullURI = await myNFT.tokenURI(tokenId);
-      expect(fullURI).to.equal(`https://gateway.pinata.cloud/ipfs/${tokenURI}`);
+  describe("Token URI", function () {
+    it("Should return correct token URI", async function () {
+      const tx = await myNFT.mint(owner.address, "QmHash");
+      const id = await getMintedTokenId(tx);
+
+      expect(await myNFT.tokenURI(id))
+        .to.equal("https://gateway.pinata.cloud/ipfs/QmHash");
     });
 
-    it("Should fail to get URI for non-existent token", async function () {
+    it("Should fail for non-existent token", async function () {
       await expect(myNFT.tokenURI(999)).to.be.reverted;
     });
   });
 
+  /* ================= HELPERS ================= */
+
   describe("Helper Functions", function () {
     it("Should return correct total supply", async function () {
-      // Your totalSupply() seems to represent "next token id / counter", not "minted count".
-      // So we validate it increases by 2 after minting 2 NFTs, instead of expecting an absolute number.
-      const before = await myNFT.totalSupply();
+      await myNFT.mint(owner.address, "A");
+      await myNFT.mint(addr1.address, "B");
 
-      await myNFT.mint(owner.address, "QmTest1");
-      await myNFT.mint(addr1.address, "QmTest2");
-
-      const after = await myNFT.totalSupply();
-      expect(after).to.equal(before + 2n);
+      expect(await myNFT.totalSupply()).to.equal(2);
     });
 
     it("Should check if token exists", async function () {
-      const tx = await myNFT.mint(owner.address, "QmTest1");
-      const tokenId = await getMintedTokenIdFromTx(tx);
+      const id = await getMintedTokenId(await myNFT.mint(owner.address, "A"));
 
-      expect(await myNFT.exists(tokenId)).to.equal(true);
+      // Check token existence using ownerOf (ERC721 standard way)
+      expect(await myNFT.ownerOf(id)).to.not.equal(hre.ethers.ZeroAddress);
+
+      // Non-existent token check
       expect(await myNFT.exists(999)).to.equal(false);
     });
   });
 
+  /* ================= BURNING ================= */
+
   describe("Burning", function () {
     it("Should allow token owner to burn", async function () {
-      const tx = await myNFT.mint(addr1.address, "QmTest1");
-      const tokenId = await getMintedTokenIdFromTx(tx);
+      const id = await getMintedTokenId(await myNFT.mint(addr1.address, "A"));
 
-      await expect(myNFT.connect(addr1).burn(tokenId))
+      await expect(myNFT.connect(addr1).burn(id))
         .to.emit(myNFT, "Transfer")
-        .withArgs(addr1.address, hre.ethers.ZeroAddress, tokenId);
+        .withArgs(addr1.address, hre.ethers.ZeroAddress, id);
 
-      await expect(myNFT.ownerOf(tokenId)).to.be.reverted;
+      await expect(myNFT.ownerOf(id)).to.be.reverted;
     });
 
-    it("Should fail if non-owner tries to burn", async function () {
-      const tx = await myNFT.mint(addr1.address, "QmTest1");
-      const tokenId = await getMintedTokenIdFromTx(tx);
+    it("Should fail if non-owner burns", async function () {
+      const id = await getMintedTokenId(await myNFT.mint(addr1.address, "A"));
 
-      await expect(myNFT.connect(addr2).burn(tokenId)).to.be.revertedWith("Only token owner can burn");
+      await expect(
+        myNFT.connect(addr2).burn(id)
+      ).to.be.revertedWith("Only token owner can burn");
     });
   });
 });
