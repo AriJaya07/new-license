@@ -192,4 +192,21 @@ describe("MyNFT", function () {
       ).to.be.revertedWith("Only token owner can burn");
     });
   });
+
+  describe("Profile Reload Simulation", function () {
+    it("Should still return user NFTs after reconnect / re-fetch", async function () {
+      // Mint NFT to addr1
+      const id = await getMintedTokenId(
+        await myNFT.mint(addr1.address, "PROFILE")
+      );
+  
+      // Simulate wallet reconnect / chain refresh
+      const freshContract = myNFT.connect(addr1);
+  
+      // Re-fetch owner (like loading profile again)
+      const owner = await freshContract.ownerOf(id);
+  
+      expect(owner).to.equal(addr1.address);
+    });
+  });
 });
