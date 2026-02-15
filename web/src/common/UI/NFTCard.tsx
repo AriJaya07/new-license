@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-type NFT = {
+export type NFT = {
   active: boolean;
   listingId: bigint;
   nftContract: string;
@@ -10,7 +10,7 @@ type NFT = {
   tokenURI: string;
 };
 
-type SortKey = "price-asc" | "price-desc" | "tokenId-asc" | "tokenId-desc";
+export type SortKey = "price-asc" | "price-desc" | "tokenId-asc" | "tokenId-desc";
 
 export type NFTGridProps = {
   items: NFT[];
