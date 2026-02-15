@@ -136,7 +136,7 @@ export const MarketplaceModal = ({
     try {
       setError("");
 
-      await buyMarketplace(listing.listingId, listing.price);
+      await buyMarketplace(listing.listingId, BigInt(listing.price));
 
       onClose();
     } catch (e: any) {
@@ -168,7 +168,7 @@ export const MarketplaceModal = ({
             )}
           </div>
 
-          <p><b>Price:</b> {formatEther(listing.price)} ETH</p>
+          <p><b>Price:</b> {formatEther(BigInt(listing.price))} ETH</p>
           <p><b>Seller:</b> {listing.seller}</p>
 
           {error && <p className="text-red-600 text-sm">{error}</p>}

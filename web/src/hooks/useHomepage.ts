@@ -3,7 +3,7 @@ import { useMyNFTRead } from "./useReadContract";
 import { useCallback, useEffect, useState } from "react";
 
 export const useHomepage = () => {
-    const { data: totalSupply } = useMyNFTRead();
+    const { totalSupply } = useMyNFTRead();
     const { address, isConnected } = useAccount();
     const { connect, connectors } = useConnect(); 
     const { disconnect } = useDisconnect(); 

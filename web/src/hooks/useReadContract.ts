@@ -1,19 +1,72 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useReadContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { ADDRESSES, ERC721Abi, Listing, MarketplaceAbi, MyNFTAbi } from "../contracts";
 import { ethers } from "ethers";
 
 export const useMyNFTRead = () => {
-  const { data } = useReadContract({
+  const { data: totalSupply } = useReadContract({
     address: ADDRESSES.myNFT,
     abi: MyNFTAbi,
     functionName: "totalSupply",
   });
 
   return {
-    data,
+    totalSupply,
+  };
+};
+
+export const useMyNFTs = () => {
+  const [listings, setListings] = useState<Listing[]>([]);
+  const { address: userAddress } = useAccount(); // get connected wallet address
+  const providerContract = process.env.NEXT_PUBLIC_PROVIDER_CONTRACT;
+
+  const { data, isLoading, isError, refetch } = useReadContract({
+    address: ADDRESSES.marketplace,
+    abi: MarketplaceAbi,
+    functionName: "getAllListings",
+  });
+
+  useEffect(() => {
+    const fetchTokenURIs = async () => {
+      if (data && userAddress) {
+        // Filter first by seller = userAddress
+        const userListings = data.filter(
+          (listing: any) =>
+            listing.seller.toLowerCase() === userAddress.toLowerCase()
+        );
+
+        const listingsData = await Promise.all(
+          userListings.map(async (listing: any, index: number) => {
+            const provider = new ethers.JsonRpcProvider(providerContract);
+            const nftContract = new ethers.Contract(listing.nftContract, ERC721Abi, provider);
+            const tokenURI = await nftContract.tokenURI(listing.tokenId);
+
+            return {
+              listingId: BigInt(index + 1),
+              nftContract: listing.nftContract,
+              tokenId: listing.tokenId.toString(),
+              seller: listing.seller,
+              price: listing.price,
+              active: listing.active,
+              tokenURI,
+            };
+          })
+        );
+
+        setListings(listingsData);
+      }
+    };
+
+    fetchTokenURIs();
+  }, [data, userAddress]);
+
+  return {
+    listings,
+    isLoading,
+    isError,
+    refetch,
   };
 };
 

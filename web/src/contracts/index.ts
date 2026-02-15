@@ -67,6 +67,13 @@ export const MyNFTAbi = [
     inputs: [],
     outputs: [{ name: "", type: "uint256" }],
   },
+  {
+    type: "function",
+    name: "tokensOfOwner",
+    stateMutability: "view",
+    inputs: [{ name: "owner", type: "address" }],
+    outputs: [{ name: "", type: "uint256[]" }],
+  },
 ] as const;
 
 // Minimal ABI Marketplace
@@ -136,10 +143,11 @@ export const ERC721Abi = [
 
 
 export type Listing = {
-    nftContract: Address;
-    tokenId: bigint;
-    seller: Address;
-    price: bigint;
-    active: boolean;
-    tokenURI: string;
+  active: boolean;
+  listingId: bigint;
+  nftContract: string;
+  price: string;
+  seller: string;
+  tokenId: string;
+  tokenURI: string;
 }

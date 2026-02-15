@@ -1,26 +1,16 @@
 import { useMemo, useState } from "react";
 
 type NFT = {
-  id: string;
-  name: string;
-  collection?: string;
-  imageUrl: string;
-  listed: boolean;
-  priceEth?: number;
-  lastSaleEth?: number;
-  rarityRank?: number;
-  chain?: string;
+  active: boolean;
+  listingId: bigint;
+  nftContract: string;
+  price: string;
+  seller: string;
+  tokenId: string;
+  tokenURI: string;
 };
 
-type SortKey =
-  | "rarity-asc"
-  | "rarity-desc"
-  | "price-asc"
-  | "price-desc"
-  | "sale-asc"
-  | "sale-desc"
-  | "name-asc"
-  | "name-desc";
+type SortKey = "price-asc" | "price-desc" | "tokenId-asc" | "tokenId-desc";
 
 export type NFTGridProps = {
   items: NFT[];
@@ -36,31 +26,13 @@ function classNames(...xs: Array<string | false | null | undefined>) {
   return xs.filter(Boolean).join(" ");
 }
 
-function formatEth(x?: number) {
-  if (x == null || Number.isNaN(x)) return "—";
-  // simple formatting; tweak if you want more precision
-  const s = x >= 100 ? x.toFixed(0) : x >= 10 ? x.toFixed(2) : x.toFixed(3);
-  return `${s} ETH`;
-}
-
-function chainBadge(chain?: NFT["chain"]) {
-  if (!chain) return null;
-  const map: Record<string, string> = {
-    ETH: "bg-slate-900/10 text-slate-900",
-    SOL: "bg-purple-600/10 text-purple-700",
-    POLY: "bg-indigo-600/10 text-indigo-700",
-    BASE: "bg-blue-600/10 text-blue-700",
-  };
-  return (
-    <span
-      className={classNames(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium",
-        map[chain] ?? "bg-slate-900/10 text-slate-900"
-      )}
-    >
-      {chain}
-    </span>
-  );
+function formatEth(weiString: string) {
+  try {
+    const eth = Number(weiString) / 1e18;
+    return `${eth.toFixed(4)} ETH`;
+  } catch {
+    return "— ETH";
+  }
 }
 
 function ListedPill({ listed }: { listed: boolean }) {
@@ -91,8 +63,7 @@ function SkeletonCard() {
       <div className="space-y-2 p-4">
         <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200/70" />
         <div className="h-3 w-1/2 animate-pulse rounded bg-slate-200/70" />
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          <div className="h-7 animate-pulse rounded-lg bg-slate-200/70" />
+        <div className="mt-3 grid grid-cols-2 gap-2">
           <div className="h-7 animate-pulse rounded-lg bg-slate-200/70" />
           <div className="h-7 animate-pulse rounded-lg bg-slate-200/70" />
         </div>
@@ -111,49 +82,34 @@ export default function NFTGrid({
   loadingCount = 12,
 }: NFTGridProps) {
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<SortKey>("rarity-asc");
+  const [sort, setSort] = useState<SortKey>("tokenId-asc");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
 
     let base = items;
 
-    if (showOnlyListed) base = base.filter((x) => x.listed);
+    if (showOnlyListed) {
+      base = base.filter((x) => x.active);
+    }
 
     if (q) {
       base = base.filter((x) => {
-        const hay = `${x.name} ${x.collection ?? ""} ${
-          x.chain ?? ""
-        }`.toLowerCase();
+        const hay = `${x.tokenId} ${x.nftContract}`.toLowerCase();
         return hay.includes(q);
       });
     }
 
     const cmp = (a: NFT, b: NFT) => {
-      const num = (v?: number, fallback = Number.POSITIVE_INFINITY) =>
-        v == null || Number.isNaN(v) ? fallback : v;
-
       switch (sort) {
-        case "rarity-asc":
-          return num(a.rarityRank) - num(b.rarityRank);
-        case "rarity-desc":
-          return num(b.rarityRank, -1) - num(a.rarityRank, -1);
-
         case "price-asc":
-          return num(a.priceEth) - num(b.priceEth);
+          return Number(a.price) - Number(b.price);
         case "price-desc":
-          return num(b.priceEth, -1) - num(a.priceEth, -1);
-
-        case "sale-asc":
-          return num(a.lastSaleEth) - num(b.lastSaleEth);
-        case "sale-desc":
-          return num(b.lastSaleEth, -1) - num(a.lastSaleEth, -1);
-
-        case "name-asc":
-          return a.name.localeCompare(b.name);
-        case "name-desc":
-          return b.name.localeCompare(a.name);
-
+          return Number(b.price) - Number(a.price);
+        case "tokenId-asc":
+          return Number(a.tokenId) - Number(b.tokenId);
+        case "tokenId-desc":
+          return Number(b.tokenId) - Number(a.tokenId);
         default:
           return 0;
       }
@@ -187,7 +143,7 @@ export default function NFTGrid({
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search name, collection, chain…"
+              placeholder="Search by token ID or contract..."
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-300 focus:shadow-md"
             />
             {query ? (
@@ -209,14 +165,10 @@ export default function NFTGrid({
               onChange={(e) => setSort(e.target.value as SortKey)}
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-slate-300 focus:shadow-md"
             >
-              <option value="rarity-asc">Rarity ↑ (rank)</option>
-              <option value="rarity-desc">Rarity ↓ (rank)</option>
+              <option value="tokenId-asc">Token ID ↑</option>
+              <option value="tokenId-desc">Token ID ↓</option>
               <option value="price-asc">Price ↑</option>
               <option value="price-desc">Price ↓</option>
-              <option value="sale-asc">Last sale ↑</option>
-              <option value="sale-desc">Last sale ↓</option>
-              <option value="name-asc">Name A→Z</option>
-              <option value="name-desc">Name Z→A</option>
             </select>
           </div>
         </div>
@@ -230,7 +182,7 @@ export default function NFTGrid({
             ))
           : filtered.map((nft) => (
               <button
-                key={nft.id}
+                key={nft.listingId.toString()}
                 type="button"
                 onClick={() => onSelect?.(nft)}
                 className={classNames(
@@ -239,22 +191,21 @@ export default function NFTGrid({
                 )}
               >
                 {/* Image */}
-                <div className="relative aspect-square w-full overflow-hidden">
+                <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
                   <img
-                    src={nft.imageUrl}
-                    alt={nft.name}
+                    src={nft.tokenURI}
+                    alt={`NFT #${nft.tokenId}`}
                     loading="lazy"
                     className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                    onError={(e) => {
+                      e.currentTarget.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23ddd" width="200" height="200"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-family="sans-serif">No Image</text></svg>';
+                    }}
                   />
 
-                  {/* Top badges */}
-                  <div className="absolute left-3 top-3 flex flex-wrap items-center gap-2">
-                    <ListedPill listed={nft.listed} />
-                    {chainBadge(nft.chain)}
+                  {/* Top badge */}
+                  <div className="absolute left-3 top-3">
+                    <ListedPill listed={nft.active} />
                   </div>
-
-                  {/* Subtle gradient for readability */}
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/55 to-transparent" />
                 </div>
 
                 {/* Content */}
@@ -262,37 +213,21 @@ export default function NFTGrid({
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="truncate text-sm font-semibold text-slate-900">
-                        {nft.name}
+                        NFT #{nft.tokenId}
                       </div>
                       <div className="truncate text-xs text-slate-600">
-                        {nft.collection ?? "—"}
+                        Listing #{nft.listingId.toString()}
                       </div>
                     </div>
-
-                    {/* Rarity chip */}
-                    {nft.rarityRank != null ? (
-                      <span className="shrink-0 rounded-lg bg-slate-900/5 px-2 py-1 text-[11px] font-medium text-slate-800">
-                        Rank #{nft.rarityRank}
-                      </span>
-                    ) : null}
                   </div>
 
-                  <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                     <div className="rounded-xl bg-slate-900/5 p-2">
                       <div className="text-[10px] font-medium text-slate-600">
                         Price
                       </div>
-                      <div className="mt-0.5 font-semibold text-slate-900">
-                        {nft.listed ? formatEth(nft.priceEth) : "—"}
-                      </div>
-                    </div>
-
-                    <div className="rounded-xl bg-slate-900/5 p-2">
-                      <div className="text-[10px] font-medium text-slate-600">
-                        Last sale
-                      </div>
-                      <div className="mt-0.5 font-semibold text-slate-900">
-                        {formatEth(nft.lastSaleEth)}
+                      <div className="mt-0.5 font-semibold text-slate-900 truncate">
+                        {formatEth(nft.price)}
                       </div>
                     </div>
 
@@ -301,7 +236,7 @@ export default function NFTGrid({
                         Status
                       </div>
                       <div className="mt-0.5 font-semibold text-slate-900">
-                        {nft.listed ? "For sale" : "Hold"}
+                        {nft.active ? "For sale" : "Unlisted"}
                       </div>
                     </div>
                   </div>

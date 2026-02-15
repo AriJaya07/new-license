@@ -32,7 +32,7 @@ const ADMIN_ADDRESSES =
 export function useUserSubmit() {
   const { address, isConnected } = useAccount();
   const marketplaceFee = useMarketplaceFee();
-  const { data: totalSupply } = useMyNFTRead();
+  const { totalSupply } = useMyNFTRead();
 
   // Check if user is admin
   const isAdmin = useMemo(() => {
