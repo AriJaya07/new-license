@@ -28,6 +28,8 @@ export default function ListMarketplace() {
   if (isLoading) return <MarketplaceLoading />;
   if (isError) return <MarketplaceError onRetry={refetch} />;
 
+  console.log(filtered, "Filtered")
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
