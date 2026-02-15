@@ -33,12 +33,13 @@ export const useListMarketplaceRead = () => {
       if (data) {
         // Use Promise.all to fetch tokenURI for each listing in parallel
         const listingsData = await Promise.all(
-          data.map(async (listing: any) => {
+          data.map(async (listing: any, index: number) => {
             const provider = new ethers.JsonRpcProvider(providerContract); // Use local Ethereum node
             const nftContract = new ethers.Contract(listing.nftContract, ERC721Abi, provider);
             const tokenURI = await nftContract.tokenURI(listing.tokenId);
 
             return {
+              listingId: BigInt(index + 1),
               nftContract: listing.nftContract,
               tokenId: listing.tokenId.toString(),
               seller: listing.seller,

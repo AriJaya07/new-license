@@ -1,5 +1,8 @@
 import { formatEther } from "viem";
 import { XCircle, RefreshCw, ImagePlus, CheckCircle, X } from "lucide-react";
+import { Listing } from "@/src/contracts";
+import { useBuyMarketplace } from "@/src/hooks/useBuyMarketplace";
+import { useState } from "react";
 
 export const MarketplaceLoading = () => {
   return (
@@ -122,19 +125,34 @@ export const MarketplaceModal = ({
   image,
   onClose,
 }: {
-  listing: any;
+  listing: Listing & { listingId: bigint };
   image?: string;
   onClose: () => void;
 }) => {
-  const price = formatEther(listing.price);
+  const { buyMarketplace, isPending } = useBuyMarketplace();
+  const [error, setError] = useState("");
+
+  const handleBuy = async () => {
+    try {
+      setError("");
+
+      await buyMarketplace(listing.listingId, listing.price);
+
+      onClose();
+    } catch (e: any) {
+      setError(e.shortMessage || "Transaction failed");
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden">
 
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="font-bold text-lg">NFT #{listing.tokenId}</h3>
-          <button onClick={onClose} className="cursor-pointer">
+          <h3 className="font-bold text-lg">
+            NFT #{listing.tokenId.toString()}
+          </h3>
+          <button onClick={onClose}>
             <X />
           </button>
         </div>
@@ -145,20 +163,22 @@ export const MarketplaceModal = ({
               <img src={image} className="w-full h-full object-cover" />
             ) : (
               <div className="flex h-full items-center justify-center">
-                <ImagePlus className="text-gray-400" size={48} />
+                <ImagePlus size={48} />
               </div>
             )}
           </div>
 
-          <div className="space-y-2 text-sm">
-            <p><b>Price:</b> {price} ETH</p>
-            <p><b>Seller:</b> {listing.seller}</p>
-            <p><b>Contract:</b> {listing.nftContract}</p>
-            <p><b>Status:</b> {listing.active ? "Active" : "Inactive"}</p>
-          </div>
+          <p><b>Price:</b> {formatEther(listing.price)} ETH</p>
+          <p><b>Seller:</b> {listing.seller}</p>
 
-          <button className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition cursor-pointer">
-            Buy Now
+          {error && <p className="text-red-600 text-sm">{error}</p>}
+
+          <button
+            onClick={handleBuy}
+            disabled={isPending}
+            className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold disabled:opacity-50"
+          >
+            {isPending ? "Buying..." : "Buy Now"}
           </button>
         </div>
       </div>
