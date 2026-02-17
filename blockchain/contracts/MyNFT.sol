@@ -64,12 +64,12 @@ contract MyNFT is ERC721URIStorage, Ownable {
                 "Token URI cannot be empty"
             );
 
+            tokenCounter++;
             uint256 newItemId = tokenCounter;
             _safeMint(to, newItemId);
             _setTokenURI(newItemId, tokenURIs[i]);
 
             tokenIds[i] = newItemId;
-            tokenCounter++;
 
             emit NFTMinted(to, newItemId, tokenURIs[i]);
         }
@@ -95,7 +95,7 @@ contract MyNFT is ERC721URIStorage, Ownable {
      * @dev Check if a token exists
      */
     function exists(uint256 tokenId) public view returns (bool) {
-        return tokenId < tokenCounter;
+        return _exists(tokenId);
     }
 
     /**
