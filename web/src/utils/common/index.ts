@@ -49,8 +49,24 @@ export function formatPrice(
 
 export const IPFS_GATEWAY = "https://gateway.pinata.cloud/ipfs/";
 
-export const normalizeIpfs = (uri: string) =>
-  uri.startsWith("ipfs://") ? uri.replace("ipfs://", IPFS_GATEWAY) : uri;
+export const normalizeIpfs = (uri: string) => {
+  if (!uri) return uri;
+  const trimmed = uri.trim();
+  if (trimmed.startsWith("ipfs://")) {
+    return trimmed.replace("ipfs://", IPFS_GATEWAY);
+  }
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  if (trimmed.startsWith(IPFS_GATEWAY)) {
+    const rest = trimmed.slice(IPFS_GATEWAY.length);
+    if (rest.startsWith("http://") || rest.startsWith("https://")) {
+      return rest;
+    }
+    return trimmed;
+  }
+  return trimmed;
+};
 
 export const truncateAddress = (address: string) => {
   return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import { ADDRESSES, ERC721Abi, Listing, MarketplaceAbi, MyNFTAbi } from "../contracts";
 import { ethers } from "ethers";
+import { fetchTokenImage } from "../fetcher/TokenUri";
 
 export const useMyNFTRead = () => {
   const { data: totalSupply } = useReadContract({
@@ -86,12 +87,22 @@ export const useMyNFTs = () => {
             seller: isActive ? listing!.seller : userAddress,
             price: isActive ? listing!.price : "0",
             active: isActive,
-            tokenURI,
+            tokenURI: tokenURI.toString(),
           };
         })
       );
 
-      setListings(listingsData);
+      const withImages = await Promise.all(
+        listingsData.map(async (listing) => {
+          const image = await fetchTokenImage(listing as Listing);
+          return {
+            ...listing,
+            tokenURI: image ?? listing.tokenURI,
+          };
+        })
+      );
+
+      setListings(withImages);
     };
 
     fetchTokenURIs();

@@ -12,7 +12,7 @@ import { Badge, Input } from "@/src/common/UI/Form";
 import { Tooltip } from "@/src/common/UI/Tooltip";
 import { Card } from "@/src/common/UI/Card";
 import { Button } from "@/src/common/UI/Button";
-import { copyAddress, truncateAddress } from "@/src/utils/common";
+import { copyAddress, normalizeIpfs, truncateAddress } from "@/src/utils/common";
 import { useState } from "react";
 
 type UserNFTProps = {
@@ -161,7 +161,7 @@ export default function UserNFT({
 
         {nftVerified && nftData && (
           <div className="flex flex-col items-center gap-4">
-            <img src={nftData.image} className="w-40 h-40 rounded-xl shadow" />
+            <img src={normalizeIpfs(nftData.image)} className="w-40 h-40 rounded-xl shadow" />
             <p className="font-semibold">{nftData.name}</p>
           </div>
         )}

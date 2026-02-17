@@ -5,6 +5,7 @@ import { formatAddress } from "@/src/utils/common";
 import { Card } from "@/src/common/UI/Card";
 import { useProfile } from "@/src/hooks/useProfile";
 import { AddressNotConnect, ModalProfileDetail } from "./common";
+import { normalizeIpfs } from "@/src/utils/common";
 
 export default function MyNfts() {
     const { 
@@ -112,7 +113,10 @@ export default function MyNfts() {
 
         {/* NFT Grid - Now using filtered data */}
         <NFTCard
-          items={filteredListings}
+          items={filteredListings.map((item) => ({
+            ...item,
+            tokenURI: normalizeIpfs(item.tokenURI),
+          }))}
           showOnlyListed={false} // Filter is handled by the hook now
           onSelect={(nft) => setSelectedNFT(nft)}
         />

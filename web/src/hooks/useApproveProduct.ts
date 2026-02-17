@@ -3,6 +3,8 @@ import { toBigIntSafe } from "../utils/common";
 import { ADDRESSES, MarketplaceAbi, MyNFTAbi } from "../contracts";
 import { useWriteContract } from "wagmi";
 import { parseEther } from "viem";
+import { ethers } from "ethers";
+import { resolveImageFromTokenURI } from "../fetcher/TokenUri";
 
 type ToastType = "success" | "error" | "info";
 type ToastState = {
@@ -153,11 +155,27 @@ export function useApproveProduct() {
     setIsApproved(true);
 
 
-    // Mock NFT data (same)
+    let image = "";
+    try {
+      const providerUrl = process.env.NEXT_PUBLIC_PROVIDER_CONTRACT;
+      if (providerUrl) {
+        const provider = new ethers.JsonRpcProvider(providerUrl);
+        const nft = new ethers.Contract(ADDRESSES.myNFT, MyNFTAbi, provider);
+        const tokenURI = await nft.tokenURI(approveTokenId);
+        const resolved = await resolveImageFromTokenURI(String(tokenURI));
+        if (resolved) image = resolved;
+      }
+    } catch {
+      // ignore image errors, verification already done
+    }
+
     setNftData({
-      name: "Cosmic Voyager #" + approveTokenId,
-      collection: "Cosmic Voyagers",
-      image: "https://placehold.co/400x400/1a1a2e/eaeaea?text=NFT+" + approveTokenId,
+      name: "NFT #" + approveTokenId,
+      collection: "MyNFT",
+      image:
+        image ||
+        "https://placehold.co/400x400/1a1a2e/eaeaea?text=NFT+" +
+          approveTokenId,
     });
     setNftVerified(true);
     setIsVerifying(false);
