@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { Alert } from "@/src/common/UI/Alert";
-import { Wallet, Image, ShieldCheck, Tag } from "lucide-react";
+import { Wallet, Image, ShieldCheck, Tag, Loader2, Check } from "lucide-react";
 
 // Toast Notification Component
-interface ToastProps {
+export interface ToastProps {
   show: boolean;
   type: "success" | "error" | "info" | "";
   title: string;
@@ -11,7 +11,7 @@ interface ToastProps {
   onClose: () => void;
 }
 
-interface StepIndicatorProps {
+export interface StepIndicatorProps {
   currentStep: number;
 }
 
@@ -36,49 +36,61 @@ export const Toast = ({ show, type, title, message, onClose }: ToastProps) => {
   );
 };
 
+const steps = [
+  { id: 1, label: "Connect", icon: <Wallet /> },
+  { id: 2, label: "Select NFT", icon: <Image /> },
+  { id: 3, label: "Approve", icon: <ShieldCheck /> },
+  { id: 4, label: "List", icon: <Tag /> },
+];
+
 export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
-  const steps = [
-    { id: 1, label: "Connect", icon: Wallet },
-    { id: 2, label: "Select NFT", icon: Image },
-    { id: 3, label: "Approve", icon: ShieldCheck },
-    { id: 4, label: "List", icon: Tag },
-  ];
+  const totalSteps = steps.length;
+  const progress =
+    totalSteps > 1
+      ? Math.min(100, Math.max(0, ((currentStep - 1) / (totalSteps - 1)) * 100))
+      : 0;
 
   return (
-    <div className="flex items-center justify-center mb-8">
-      {steps.map((step, index) => (
-        <div key={step.id} className="flex items-center">
-          <div className="flex flex-col items-center">
-            <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
-                currentStep >= step.id
-                  ? "bg-gradient-to-br from-indigo-600 to-blue-500 text-white shadow-lg shadow-indigo-500/30"
-                  : "bg-muted text-muted-foreground"
-              }`}
-            >
-              <step.icon className="w-5 h-5" />
+    <div className="mb-8 rounded-2xl border bg-white/70 p-4 md:p-6 shadow-sm backdrop-blur">
+      <div className="h-2 w-full rounded-full bg-muted/60 overflow-hidden mb-4">
+        <div
+          className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {steps.map((item, index) => {
+          const step = index + 1;
+          const active = currentStep >= step;
+          const current = currentStep === step;
+
+          return (
+            <div key={step} className="flex flex-col items-center text-center">
+              <div
+                className={`w-11 h-11 rounded-full flex items-center justify-center border-2 transition
+                ${
+                  active
+                    ? "bg-indigo-600 border-indigo-600 text-white"
+                    : "border-muted text-muted-foreground"
+                }
+                ${current ? "ring-2 ring-indigo-300 ring-offset-2 ring-offset-white" : ""}`}
+                aria-current={current ? "step" : undefined}
+              >
+                {currentStep > step ? <Check size={18} /> : item.icon}
+              </div>
+
+              <p
+                className={`text-xs mt-2 font-medium ${
+                  active ? "text-indigo-600" : "text-muted-foreground"
+                }`}
+              >
+                {item.label}
+              </p>
             </div>
-            <span
-              className={`mt-2 text-sm font-medium transition-colors ${
-                currentStep >= step.id
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              }`}
-            >
-              {step.label}
-            </span>
-          </div>
-          {index < steps.length - 1 && (
-            <div
-              className={`w-16 md:w-24 h-1 mx-2 rounded-full transition-all duration-500 ${
-                currentStep > step.id
-                  ? "bg-gradient-to-r from-indigo-600 to-blue-500"
-                  : "bg-muted"
-              }`}
-            />
-          )}
-        </div>
-      ))}
+          );
+        })}
+      </div>
     </div>
   );
-};
+}

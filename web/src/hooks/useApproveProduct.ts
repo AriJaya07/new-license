@@ -24,6 +24,7 @@ type ModalState = {
 export function useApproveProduct() {
 
   const { writeContractAsync } = useWriteContract();
+  const [currentStep, setCurrentStep] = useState<number>(1);
 
   // Wallet state
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
@@ -49,7 +50,6 @@ export function useApproveProduct() {
   const [isListed, setIsListed] = useState<boolean>(false);
 
   // UI state
-  const [currentStep, setCurrentStep] = useState<number>(1);
   const [toast, setToast] = useState<ToastState>({
     show: false,
     type: "",
@@ -84,8 +84,7 @@ export function useApproveProduct() {
   // Update current step based on state (same logic)
   useEffect(() => {
     if (isListed) setCurrentStep(4);
-    else if (isApproved) setCurrentStep(4);
-    else if (nftVerified) setCurrentStep(3);
+    else if (isApproved || nftVerified) setCurrentStep(3);
     else if (isWalletConnected) setCurrentStep(2);
     else setCurrentStep(1);
   }, [isWalletConnected, nftVerified, isApproved, isListed]);
@@ -151,6 +150,7 @@ export function useApproveProduct() {
       functionName: "approve",
       args: [ADDRESSES.marketplace, approveTokenId],
     });
+    setIsApproved(true);
 
 
     // Mock NFT data (same)

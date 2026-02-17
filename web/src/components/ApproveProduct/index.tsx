@@ -18,6 +18,25 @@ export default function ApproveProduct() {
     modal,
     setModal,
     setToast,
+    isWalletConnected,
+    walletAddress,
+    network,
+    isConnecting,
+    tokenId,
+    setTokenId,
+    isVerifying,
+    nftVerified,
+    nftData,
+    price,
+    setPrice,
+    marketplaceFee,
+    sellerReceives,
+    connectWallet,
+    disconnectWallet,
+    verifyNFT,
+    listTokenId,
+    setListTokenId,
+    listNFT,
   } = useApproveProduct();
   
 
@@ -42,7 +61,27 @@ export default function ApproveProduct() {
           {/* Step Indicator */}
           <StepIndicator currentStep={currentStep} />
 
-         <UserNFT />
+         <UserNFT
+          isWalletConnected={isWalletConnected}
+          walletAddress={walletAddress}
+          network={network}
+          isConnecting={isConnecting}
+          tokenId={tokenId}
+          setTokenId={setTokenId}
+          isVerifying={isVerifying}
+          nftVerified={nftVerified}
+          nftData={nftData}
+          price={price}
+          setPrice={setPrice}
+          marketplaceFee={marketplaceFee}
+          sellerReceives={sellerReceives}
+          connectWallet={connectWallet}
+          disconnectWallet={disconnectWallet}
+          verifyNFT={verifyNFT}
+          listTokenId={listTokenId}
+          setListTokenId={setListTokenId}
+          listNFT={listNFT}
+         />
         </div>
 
         {/* Toast Notification */}
