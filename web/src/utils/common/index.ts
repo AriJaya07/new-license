@@ -51,21 +51,32 @@ export const IPFS_GATEWAY = "https://gateway.pinata.cloud/ipfs/";
 
 export const normalizeIpfs = (uri: string) => {
   if (!uri) return uri;
-  const trimmed = uri.trim();
-  if (trimmed.startsWith("ipfs://")) {
-    return trimmed.replace("ipfs://", IPFS_GATEWAY);
+
+  let trimmed = uri.trim();
+
+  // unwrap: /ipfs/https:/example.com
+  const ipfsHttpMatch = trimmed.match(/\/ipfs\/(https?:.*)$/);
+  if (ipfsHttpMatch?.[1]) {
+    trimmed = ipfsHttpMatch[1];
   }
+
+  // fix broken protocols like https:/ or https:///
+  trimmed = trimmed.replace(/^https?:\/+/, (m) =>
+    m.startsWith("https") ? "https://" : "http://"
+  );
+
+  // already valid http(s)
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
     return trimmed;
   }
-  if (trimmed.startsWith(IPFS_GATEWAY)) {
-    const rest = trimmed.slice(IPFS_GATEWAY.length);
-    if (rest.startsWith("http://") || rest.startsWith("https://")) {
-      return rest;
-    }
-    return trimmed;
+
+  // ipfs://CID
+  if (trimmed.startsWith("ipfs://")) {
+    return IPFS_GATEWAY + trimmed.replace("ipfs://", "");
   }
-  return trimmed;
+
+  // raw CID
+  return IPFS_GATEWAY + trimmed;
 };
 
 export const truncateAddress = (address: string) => {
