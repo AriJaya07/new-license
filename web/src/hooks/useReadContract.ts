@@ -22,45 +22,80 @@ export const useMyNFTs = () => {
   const { address: userAddress } = useAccount(); // get connected wallet address
   const providerContract = process.env.NEXT_PUBLIC_PROVIDER_CONTRACT;
 
-  const { data, isLoading, isError, refetch } = useReadContract({
+  const { data: allListings, isLoading, isError, refetch } = useReadContract({
     address: ADDRESSES.marketplace,
     abi: MarketplaceAbi,
     functionName: "getAllListings",
   });
 
+  const { data: tokenIds } = useReadContract({
+    address: ADDRESSES.myNFT,
+    abi: MyNFTAbi,
+    functionName: "tokensOfOwner",
+    args: userAddress ? [userAddress] : undefined,
+    query: { enabled: !!userAddress },
+  });
+
   useEffect(() => {
     const fetchTokenURIs = async () => {
-      if (data && userAddress) {
-        // Filter first by seller = userAddress
-        const userListings = data.filter(
-          (listing: any) =>
-            listing.seller.toLowerCase() === userAddress.toLowerCase()
-        );
-
-        const listingsData = await Promise.all(
-          userListings.map(async (listing: any, index: number) => {
-            const provider = new ethers.JsonRpcProvider(providerContract);
-            const nftContract = new ethers.Contract(listing.nftContract, ERC721Abi, provider);
-            const tokenURI = await nftContract.tokenURI(listing.tokenId);
-
-            return {
-              listingId: BigInt(index + 1),
-              nftContract: listing.nftContract,
-              tokenId: listing.tokenId.toString(),
-              seller: listing.seller,
-              price: listing.price,
-              active: listing.active,
-              tokenURI,
-            };
-          })
-        );
-
-        setListings(listingsData);
+      if (!userAddress || !tokenIds || !providerContract) {
+        setListings([]);
+        return;
       }
+
+      const listingMap = new Map<
+        string,
+        {
+          listingId: bigint;
+          seller: string;
+          price: string;
+          active: boolean;
+          nftContract: string;
+          tokenId: bigint;
+        }
+      >();
+
+      if (allListings) {
+        allListings.forEach((listing: any, index: number) => {
+          const key = `${listing.nftContract.toLowerCase()}:${listing.tokenId.toString()}`;
+          listingMap.set(key, {
+            listingId: BigInt(index + 1),
+            seller: listing.seller,
+            price: listing.price.toString(),
+            active: listing.active,
+            nftContract: listing.nftContract,
+            tokenId: listing.tokenId,
+          });
+        });
+      }
+
+      const provider = new ethers.JsonRpcProvider(providerContract);
+      const nftContract = new ethers.Contract(ADDRESSES.myNFT, ERC721Abi, provider);
+
+      const listingsData = await Promise.all(
+        (tokenIds as readonly bigint[]).map(async (tokenId) => {
+          const tokenURI = await nftContract.tokenURI(tokenId);
+          const key = `${ADDRESSES.myNFT.toLowerCase()}:${tokenId.toString()}`;
+          const listing = listingMap.get(key);
+          const isActive = listing?.active ?? false;
+
+          return {
+            listingId: listing?.listingId ?? BigInt(0),
+            nftContract: listing?.nftContract ?? ADDRESSES.myNFT,
+            tokenId: tokenId.toString(),
+            seller: isActive ? listing!.seller : userAddress,
+            price: isActive ? listing!.price : "0",
+            active: isActive,
+            tokenURI,
+          };
+        })
+      );
+
+      setListings(listingsData);
     };
 
     fetchTokenURIs();
-  }, [data, userAddress]);
+  }, [allListings, tokenIds, userAddress, providerContract]);
 
   return {
     listings,
