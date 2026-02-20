@@ -1,14 +1,5 @@
 import Link from "next/link";
-import {
-  Sparkles,
-  TrendingUp,
-  Shield,
-  Zap,
-  ArrowRight,
-  Palette,
-  Wallet,
-  Tag,
-} from "lucide-react";
+import { Sparkles, Zap, ArrowRight, Palette, Wallet, Tag } from "lucide-react";
 import { Card } from "@/src/common/UI/Card";
 import { Button } from "@/src/common/UI/Button";
 
@@ -17,10 +8,7 @@ interface HomepageProps {
   setIsCreateNFT: () => void;
 }
 
-export default function Homepage({
-  totalSupply,
-  setIsCreateNFT,
-}: HomepageProps) {
+export default function Homepage({ totalSupply, setIsCreateNFT }: HomepageProps) {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -36,9 +24,7 @@ export default function Homepage({
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-white bg-opacity-20 backdrop-blur-sm px-4 py-2 rounded-full mb-8">
               <Sparkles size={20} />
-              <span className="text-sm font-medium">
-                Welcome to the Future of Digital Art
-              </span>
+              <span className="text-sm font-medium">Welcome to the Future of Digital Art</span>
             </div>
 
             <h1 className="text-xl md:text-5xl font-bold mb-6 leading-tight text-white">
@@ -49,16 +35,13 @@ export default function Homepage({
             </h1>
 
             <p className="text-xl md:text-2xl mb-10 text-gray-100 max-w-2xl mx-auto">
-              The world's first and largest digital marketplace for crypto
-              collectibles and non-fungible tokens
+              The world's first and largest digital marketplace for crypto collectibles and
+              non-fungible tokens
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/marketplace">
-                <Button
-                  size="lg"
-                  className="bg-white text-primary-700 hover:bg-gray-500 !w-full"
-                >
+                <Button size="lg" className="bg-white text-primary-700 hover:bg-gray-500 !w-full">
                   <Palette size={20} /> Explore NFTs <ArrowRight size={20} />
                 </Button>
               </Link>
@@ -97,9 +80,7 @@ export default function Homepage({
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Our Marketplace?
-            </h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Our Marketplace?</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Built on Ethereum with security and transparency at its core
             </p>
@@ -112,8 +93,8 @@ export default function Homepage({
               </div>
               <h3 className="text-xl font-bold mb-4 text-black">Set up your wallet</h3>
               <p className="text-gray-600">
-                Once you've set up your wallet of choice, connect it by clicking
-                the wallet icon in the top right corner.
+                Once you've set up your wallet of choice, connect it by clicking the wallet icon in
+                the top right corner.
               </p>
             </Card>
 
@@ -123,8 +104,8 @@ export default function Homepage({
               </div>
               <h3 className="text-xl font-bold mb-4 text-black">Create your NFT</h3>
               <p className="text-gray-600">
-                Upload your work, add a title and description, and customize
-                your NFTs with properties and stats.
+                Upload your work, add a title and description, and customize your NFTs with
+                properties and stats.
               </p>
             </Card>
 
@@ -134,9 +115,8 @@ export default function Homepage({
               </div>
               <h3 className="text-xl font-bold mb-4 text-black">List them for sale</h3>
               <p className="text-gray-600">
-                Choose between auctions, fixed-price listings, and
-                declining-price listings. You choose how you want to sell your
-                NFTs.
+                Choose between auctions, fixed-price listings, and declining-price listings. You
+                choose how you want to sell your NFTs.
               </p>
             </Card>
           </div>

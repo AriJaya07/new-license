@@ -40,9 +40,7 @@ function ListedPill({ listed }: { listed: boolean }) {
     <span
       className={classNames(
         "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium",
-        listed
-          ? "bg-emerald-600/10 text-emerald-700"
-          : "bg-slate-500/10 text-slate-700"
+        listed ? "bg-emerald-600/10 text-emerald-700" : "bg-slate-500/10 text-slate-700"
       )}
     >
       <span
@@ -118,21 +116,16 @@ export default function NFTGrid({
     return [...base].sort(cmp);
   }, [items, showOnlyListed, query, sort]);
 
-  const empty =
-    emptyText ?? (showOnlyListed ? "No listed NFTs found." : "No NFTs found.");
+  const empty = emptyText ?? (showOnlyListed ? "No listed NFTs found." : "No NFTs found.");
 
   return (
     <section className="w-full">
       {/* Header */}
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-            {title}
-          </h2>
+          <h2 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h2>
           <p className="mt-1 text-sm text-slate-600">
-            {loading
-              ? "Loading…"
-              : `${filtered.length} item${filtered.length === 1 ? "" : "s"}`}
+            {loading ? "Loading…" : `${filtered.length} item${filtered.length === 1 ? "" : "s"}`}
             {showOnlyListed ? " • listed only" : ""}
           </p>
         </div>
@@ -177,9 +170,7 @@ export default function NFTGrid({
       {/* Grid */}
       <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {loading
-          ? Array.from({ length: loadingCount }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))
+          ? Array.from({ length: loadingCount }).map((_, i) => <SkeletonCard key={i} />)
           : filtered.map((nft) => (
               <button
                 key={nft.listingId.toString()}
@@ -198,7 +189,8 @@ export default function NFTGrid({
                     loading="lazy"
                     className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                     onError={(e) => {
-                      e.currentTarget.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23ddd" width="200" height="200"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-family="sans-serif">No Image</text></svg>';
+                      e.currentTarget.src =
+                        'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23ddd" width="200" height="200"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-family="sans-serif">No Image</text></svg>';
                     }}
                   />
 
@@ -223,18 +215,14 @@ export default function NFTGrid({
 
                   <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                     <div className="rounded-xl bg-slate-900/5 p-2">
-                      <div className="text-[10px] font-medium text-slate-600">
-                        Price
-                      </div>
+                      <div className="text-[10px] font-medium text-slate-600">Price</div>
                       <div className="mt-0.5 font-semibold text-slate-900 truncate">
                         {formatEth(nft.price)}
                       </div>
                     </div>
 
                     <div className="rounded-xl bg-slate-900/5 p-2">
-                      <div className="text-[10px] font-medium text-slate-600">
-                        Status
-                      </div>
+                      <div className="text-[10px] font-medium text-slate-600">Status</div>
                       <div className="mt-0.5 font-semibold text-slate-900">
                         {nft.active ? "For sale" : "Unlisted"}
                       </div>
@@ -252,13 +240,9 @@ export default function NFTGrid({
       {!loading && filtered.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
           <div className="mx-auto max-w-md">
-            <div className="text-sm font-semibold text-slate-900">
-              Nothing here
-            </div>
+            <div className="text-sm font-semibold text-slate-900">Nothing here</div>
             <div className="mt-1 text-sm text-slate-600">{empty}</div>
-            <div className="mt-4 text-xs text-slate-500">
-              Try changing your search or sort.
-            </div>
+            <div className="mt-4 text-xs text-slate-500">Try changing your search or sort.</div>
           </div>
         </div>
       ) : null}

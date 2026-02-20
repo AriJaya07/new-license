@@ -52,8 +52,7 @@ export const RolePopup: React.FC<RolePopupProps> = ({
 
   if (!isOpen) return null;
 
-  const isAdmin =
-    (walletAddress ?? "").toLowerCase() === (adminAddress ?? "").toLowerCase();
+  const isAdmin = (walletAddress ?? "").toLowerCase() === (adminAddress ?? "").toLowerCase();
 
   const goAdmin = () => {
     if (!isAdmin) {
@@ -78,10 +77,7 @@ export const RolePopup: React.FC<RolePopupProps> = ({
       onMouseDown={onBackdropMouseDown}
     >
       {/* Backdrop: 50% opacity + blur */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
 
       {/* Modal */}
       <div
@@ -102,15 +98,10 @@ export const RolePopup: React.FC<RolePopupProps> = ({
         </button>
 
         <div className="">
-          <h2
-            id="role-popup-title"
-            className="text-xl font-semibold text-zinc-900"
-          >
+          <h2 id="role-popup-title" className="text-xl font-semibold text-zinc-900">
             Choose your role
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
-            Admin access requires the authorized wallet.
-          </p>
+          <p className="mt-1 text-sm text-zinc-500">Admin access requires the authorized wallet.</p>
 
           {error && (
             <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">

@@ -40,9 +40,7 @@ export const useProfile = () => {
     const listedPrices = profileData
       .filter((item) => item.active)
       .map((item) => Number(item.price) / 1e18);
-    const floorPrice = listedPrices.length > 0 
-      ? Math.min(...listedPrices) 
-      : 0;
+    const floorPrice = listedPrices.length > 0 ? Math.min(...listedPrices) : 0;
 
     return {
       owned,
@@ -53,11 +51,11 @@ export const useProfile = () => {
   }, [profileData]);
 
   const handleCopy = (address?: string) => {
-    if (!address) return 
-    copyAddress(address)
+    if (!address) return;
+    copyAddress(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }
+  };
 
   return {
     address,

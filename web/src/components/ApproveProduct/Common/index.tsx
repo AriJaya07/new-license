@@ -46,9 +46,7 @@ const steps = [
 export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
   const totalSteps = steps.length;
   const progress =
-    totalSteps > 1
-      ? Math.min(100, Math.max(0, ((currentStep - 1) / (totalSteps - 1)) * 100))
-      : 0;
+    totalSteps > 1 ? Math.min(100, Math.max(0, ((currentStep - 1) / (totalSteps - 1)) * 100)) : 0;
 
   return (
     <div className="mb-8 rounded-2xl border bg-white/70 p-4 md:p-6 shadow-sm backdrop-blur">
@@ -93,4 +91,4 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
       </div>
     </div>
   );
-}
+};

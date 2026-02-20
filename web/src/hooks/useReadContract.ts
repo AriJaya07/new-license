@@ -23,7 +23,12 @@ export const useMyNFTs = () => {
   const { address: userAddress } = useAccount(); // get connected wallet address
   const providerContract = process.env.NEXT_PUBLIC_PROVIDER_CONTRACT;
 
-  const { data: allListings, isLoading, isError, refetch } = useReadContract({
+  const {
+    data: allListings,
+    isLoading,
+    isError,
+    refetch,
+  } = useReadContract({
     address: ADDRESSES.marketplace,
     abi: MarketplaceAbi,
     functionName: "getAllListings",
@@ -118,7 +123,7 @@ export const useMyNFTs = () => {
 
 export const useListMarketplaceRead = () => {
   const [listings, setListings] = useState<Listing[]>([]);
-  const providerContract = process.env.NEXT_PUBLIC_PROVIDER_CONTRACT
+  const providerContract = process.env.NEXT_PUBLIC_PROVIDER_CONTRACT;
 
   // Read contract: getAllListings
   const { data, isLoading, isError, refetch } = useReadContract({

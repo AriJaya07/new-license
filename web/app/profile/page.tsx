@@ -4,6 +4,8 @@ import MyNfts from "@/src/components/MyNfts";
 
 export default function ProfilePage() {
   return (
-    <MyNfts />
+    <div>
+      <MyNfts />
+    </div>
   );
 }

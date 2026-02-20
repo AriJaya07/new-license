@@ -3,19 +3,11 @@
 import { ADDRESSES } from "@/src/contracts";
 import { isAddress } from "viem";
 import { Toaster } from "react-hot-toast";
-import {
-  Shield,
-  Wallet,
-  Link2,
-  CheckCircle,
-  AlertCircle,
-  Loader2,
-} from "lucide-react";
+import { Shield, Wallet, Link2, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import useAdmin from "@/src/hooks/useAdmin";
 
 export default function FormAdmin() {
-
-  const { to, setTo, uri, setUri, mint, isMinting } = useAdmin()
+  const { to, setTo, uri, setUri, mint, isMinting } = useAdmin();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-12">
@@ -57,8 +49,7 @@ export default function FormAdmin() {
               <div className="flex-1">
                 <p className="font-bold text-gray-900">Mint Details</p>
                 <p className="text-sm text-gray-600">
-                  Enter the receiver address and the metadata URI (ipfs:// or
-                  https://).
+                  Enter the receiver address and the metadata URI (ipfs:// or https://).
                 </p>
               </div>
             </div>
@@ -68,9 +59,7 @@ export default function FormAdmin() {
           <div className="p-6 space-y-5">
             {/* To address */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                To address
-              </label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">To address</label>
               <div className="relative">
                 <Wallet
                   size={18}
@@ -82,8 +71,8 @@ export default function FormAdmin() {
                       to.length === 0
                         ? "border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500"
                         : isAddress(to)
-                        ? "border-green-200 focus:border-green-400 focus:ring-2 focus:ring-green-200"
-                        : "border-red-200 focus:border-red-400 focus:ring-2 focus:ring-red-200"
+                          ? "border-green-200 focus:border-green-400 focus:ring-2 focus:ring-green-200"
+                          : "border-red-200 focus:border-red-400 focus:ring-2 focus:ring-red-200"
                     }`}
                   placeholder="0x..."
                   value={to}
@@ -108,9 +97,7 @@ export default function FormAdmin() {
 
             {/* Token URI */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Token URI
-              </label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Token URI</label>
               <div className="relative">
                 <Link2
                   size={18}
@@ -181,8 +168,7 @@ export default function FormAdmin() {
             <div>
               <p className="font-semibold text-amber-900">Admin only</p>
               <p className="text-sm text-amber-800">
-                Make sure you’re connected with an admin wallet and on the
-                correct network.
+                Make sure you’re connected with an admin wallet and on the correct network.
               </p>
             </div>
           </div>

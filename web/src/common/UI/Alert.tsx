@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, Info } from "lucide-react"; 
+import { CheckCircle, XCircle, Info } from "lucide-react";
 
 interface AlertProps {
   type: "success" | "error" | "info" | "";

@@ -26,8 +26,7 @@ export interface PendingSubmission {
 }
 
 // Add this to your environment variables
-const ADMIN_ADDRESSES =
-  process.env.NEXT_PUBLIC_ADMIN_ADDRESSES?.split(",") || [];
+const ADMIN_ADDRESSES = process.env.NEXT_PUBLIC_ADMIN_ADDRESSES?.split(",") || [];
 
 export function useUserSubmit() {
   const { address, isConnected } = useAccount();
@@ -36,9 +35,7 @@ export function useUserSubmit() {
 
   // Check if user is admin
   const isAdmin = useMemo(() => {
-    return ADMIN_ADDRESSES.some(
-      (admin) => admin.toLowerCase() === address?.toLowerCase()
-    );
+    return ADMIN_ADDRESSES.some((admin) => admin.toLowerCase() === address?.toLowerCase());
   }, [address]);
 
   // Form state
@@ -59,9 +56,7 @@ export function useUserSubmit() {
   const [showTermsModal, setShowTermsModal] = useState(false);
 
   // Pending submissions (in production, this would come from a database)
-  const [pendingSubmissions, setPendingSubmissions] = useState<
-    PendingSubmission[]
-  >([]);
+  const [pendingSubmissions, setPendingSubmissions] = useState<PendingSubmission[]>([]);
 
   // EmailJS configuration
   const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "";
@@ -146,22 +141,15 @@ export function useUserSubmit() {
         };
 
         // Send email using EmailJS
-        const result = await emailjs.send(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
-          submissionData
-        );
+        const result = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, submissionData);
 
         if (result.status === 200) {
           toast.success("Request submitted successfully!", {
             id: loadingToast,
           });
-          toast.success(
-            "Admin will review your submission and contact you via email",
-            {
-              duration: 5000,
-            }
-          );
+          toast.success("Admin will review your submission and contact you via email", {
+            duration: 5000,
+          });
 
           // OPTIONAL UI: store local pending submission (so admin can see it in Submissions tab)
           setPendingSubmissions((prev) => [

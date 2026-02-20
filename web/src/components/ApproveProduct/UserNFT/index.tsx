@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Check,
-  CheckCircle2,
-  Copy,
-  Globe,
-  Loader2,
-  Wallet,
-} from "lucide-react";
+import { Check, CheckCircle2, Copy, Globe, Loader2, Wallet } from "lucide-react";
 import { Badge, Input } from "@/src/common/UI/Form";
 import { Tooltip } from "@/src/common/UI/Tooltip";
 import { Card } from "@/src/common/UI/Card";
@@ -58,7 +51,6 @@ export default function UserNFT({
   setListTokenId,
   listNFT,
 }: UserNFTProps) {
-
   const [copied, setCopied] = useState(false);
 
   const handleCopy = (address: string) => {
@@ -69,10 +61,8 @@ export default function UserNFT({
 
   return (
     <div className="space-y-10">
-
       {/* ================= WALLET ================= */}
       <Card className="border-2 shadow-lg p-6 space-y-6">
-
         <header className="flex justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
@@ -144,11 +134,7 @@ export default function UserNFT({
         />
 
         {!nftVerified && (
-          <Button
-            onClick={verifyNFT}
-            disabled={!tokenId || isVerifying}
-            className="w-full"
-          >
+          <Button onClick={verifyNFT} disabled={!tokenId || isVerifying} className="w-full">
             {isVerifying ? (
               <>
                 <Loader2 className="animate-spin mr-2" /> Verifying
@@ -170,7 +156,6 @@ export default function UserNFT({
       {/* ================= LIST ================= */}
       {nftVerified && (
         <Card className="border-2 shadow-lg p-6 space-y-6">
-
           <header>
             <h2 className="font-semibold">List NFT</h2>
             <p className="text-sm text-muted-foreground">Step 3</p>

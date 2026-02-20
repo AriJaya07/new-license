@@ -45,40 +45,40 @@ export function TermsModal(props: {
           <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
             <p className="font-medium text-gray-900 mb-2">1) Ownership & Rights</p>
             <p>
-              You confirm you own the content or have permission to mint it as an NFT.
-              Submissions that infringe IP/copyright will be rejected.
+              You confirm you own the content or have permission to mint it as an NFT. Submissions
+              that infringe IP/copyright will be rejected.
             </p>
           </div>
 
           <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
             <p className="font-medium text-gray-900 mb-2">2) Review Process</p>
             <p>
-              Submissions are reviewed by admins. Approval is not guaranteed.
-              You may be contacted via email for clarifications.
+              Submissions are reviewed by admins. Approval is not guaranteed. You may be contacted
+              via email for clarifications.
             </p>
           </div>
 
           <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
             <p className="font-medium text-gray-900 mb-2">3) Content Guidelines</p>
             <p>
-              No illegal content, impersonation, stolen artwork, or hateful/harassing
-              material. Admins may reject submissions that violate platform policies.
+              No illegal content, impersonation, stolen artwork, or hateful/harassing material.
+              Admins may reject submissions that violate platform policies.
             </p>
           </div>
 
           <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
             <p className="font-medium text-gray-900 mb-2">4) Fees & Marketplace</p>
             <p>
-              Marketplace fees may apply. Fees shown on the dashboard are subject to
-              change via contract settings.
+              Marketplace fees may apply. Fees shown on the dashboard are subject to change via
+              contract settings.
             </p>
           </div>
 
           <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
             <AlertCircle className="text-amber-700 mt-0.5" size={18} />
             <p className="text-amber-900">
-              This is a template Terms section for UI. Replace with your legal text
-              before production.
+              This is a template Terms section for UI. Replace with your legal text before
+              production.
             </p>
           </div>
         </div>
@@ -90,7 +90,8 @@ export function TermsModal(props: {
             className="w-full sm:w-auto"
           >
             Close
-          </Button>˝
+          </Button>
+          ˝
           <Button
             onClick={() => {
               setTermsAccepted(true);

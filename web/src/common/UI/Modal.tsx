@@ -12,27 +12,18 @@ interface CustomLabelProps {
 }
 
 interface BadgeProps {
-    className?: string;
-    children: React.ReactNode;
-  }
+  className?: string;
+  children: React.ReactNode;
+}
 
-
-export const Input = ({
-  label,
-  containerClassName = "",
-  id,
-  ...props
-}: InputProps) => {
+export const Input = ({ label, containerClassName = "", id, ...props }: InputProps) => {
   const autoId = React.useId();
   const inputId = id ?? autoId;
 
   return (
     <div className={`w-full ${containerClassName}`}>
       {label && (
-        <label
-          htmlFor={inputId}
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
+        <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 mb-2">
           {label}
         </label>
       )}
@@ -63,11 +54,11 @@ export const CustomLabel = ({ htmlFor, children }: CustomLabelProps) => {
   return <label htmlFor={htmlFor}>{children}</label>;
 };
 
-export const Badge= ({ className, children }: BadgeProps) => {
+export const Badge = ({ className, children }: BadgeProps) => {
   return (
     <span
       className={`inline-block px-4 py-2 text-sm font-medium rounded-full border ${className}`}
-      style={{ display: 'inline-block', maxWidth: 'fit-content' }}
+      style={{ display: "inline-block", maxWidth: "fit-content" }}
     >
       {children}
     </span>

@@ -7,12 +7,7 @@ interface TooltipProps {
   contentClassName?: string;
 }
 
-export const Tooltip = ({
-  children,
-  content,
-  className,
-  contentClassName,
-}: TooltipProps) => {
+export const Tooltip = ({ children, content, className, contentClassName }: TooltipProps) => {
   return (
     <div className={`relative inline-block group ${className}`}>
       <span className="cursor-pointer">{children}</span>

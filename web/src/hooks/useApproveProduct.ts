@@ -24,7 +24,6 @@ type ModalState = {
 };
 
 export function useApproveProduct() {
-
   const { writeContractAsync } = useWriteContract();
   const [currentStep, setCurrentStep] = useState<number>(1);
 
@@ -37,7 +36,7 @@ export function useApproveProduct() {
   // NFT state
   const [contractAddress, setContractAddress] = useState<string>("");
   const [tokenId, setTokenId] = useState<string>("");
-  const [listTokenId, setListTokenId] = useState<string>("")
+  const [listTokenId, setListTokenId] = useState<string>("");
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [nftVerified, setNftVerified] = useState<boolean>(false);
   const [nftData, setNftData] = useState<any>(null);
@@ -98,11 +97,7 @@ export function useApproveProduct() {
     setWalletAddress("0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
     setIsWalletConnected(true);
     setIsConnecting(false);
-    showToast(
-      "success",
-      "Wallet Connected",
-      "Successfully connected to your wallet"
-    );
+    showToast("success", "Wallet Connected", "Successfully connected to your wallet");
   };
 
   const disconnectWallet = () => {
@@ -115,11 +110,7 @@ export function useApproveProduct() {
     setPrice("");
     setContractAddress("");
     setTokenId("");
-    showToast(
-      "info",
-      "Wallet Disconnected",
-      "Your wallet has been disconnected"
-    );
+    showToast("info", "Wallet Disconnected", "Your wallet has been disconnected");
   };
 
   // Validate contract address (same)
@@ -154,7 +145,6 @@ export function useApproveProduct() {
     });
     setIsApproved(true);
 
-
     let image = "";
     try {
       const providerUrl = process.env.NEXT_PUBLIC_PROVIDER_CONTRACT;
@@ -172,18 +162,11 @@ export function useApproveProduct() {
     setNftData({
       name: "NFT #" + approveTokenId,
       collection: "MyNFT",
-      image:
-        image ||
-        "https://placehold.co/400x400/1a1a2e/eaeaea?text=NFT+" +
-          approveTokenId,
+      image: image || "https://placehold.co/400x400/1a1a2e/eaeaea?text=NFT+" + approveTokenId,
     });
     setNftVerified(true);
     setIsVerifying(false);
-    showToast(
-      "success",
-      "NFT Verified",
-      "Ownership confirmed for token #" + approveTokenId
-    );
+    showToast("success", "NFT Verified", "Ownership confirmed for token #" + approveTokenId);
   };
 
   // Validate price (same)

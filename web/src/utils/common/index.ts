@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { FormatPriceOptions } from "../type";
 
-
 export function formatAddress(
   address?: string | null,
   options?: {
@@ -33,11 +32,7 @@ export function formatPrice(
   if (value === null || value === undefined) return fallback;
 
   const num =
-    typeof value === "bigint"
-      ? Number(value)
-      : typeof value === "string"
-      ? Number(value)
-      : value;
+    typeof value === "bigint" ? Number(value) : typeof value === "string" ? Number(value) : value;
 
   if (Number.isNaN(num)) return fallback;
 
@@ -61,9 +56,7 @@ export const normalizeIpfs = (uri: string) => {
   }
 
   // fix broken protocols like https:/ or https:///
-  trimmed = trimmed.replace(/^https?:\/+/, (m) =>
-    m.startsWith("https") ? "https://" : "http://"
-  );
+  trimmed = trimmed.replace(/^https?:\/+/, (m) => (m.startsWith("https") ? "https://" : "http://"));
 
   // already valid http(s)
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
@@ -94,11 +87,11 @@ export const copyAddress = async (walletAddress: string): Promise<boolean> => {
 };
 
 export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs)
+  return clsx(inputs);
 }
 
 export function toBigIntSafe(v: string): bigint {
-    const n = v.trim();
-    if (!n) return 0n;
-    return BigInt(n);
-  }
+  const n = v.trim();
+  if (!n) return 0n;
+  return BigInt(n);
+}

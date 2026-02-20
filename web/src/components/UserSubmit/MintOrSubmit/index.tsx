@@ -87,9 +87,7 @@ export function MintOrSubmit(props: {
                 type="text"
                 placeholder="John Doe"
                 value={name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setName(e.target.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               />
 
               <Input
@@ -97,9 +95,7 @@ export function MintOrSubmit(props: {
                 type="email"
                 placeholder="john@example.com"
                 value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               />
             </>
           )}
@@ -107,8 +103,7 @@ export function MintOrSubmit(props: {
           {/* Image Upload */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              NFT Image *{" "}
-              <span className="text-gray-500 text-xs">(Max 10MB)</span>
+              NFT Image * <span className="text-gray-500 text-xs">(Max 10MB)</span>
             </label>
             <div className="border-3 border-dashed border-primary-300 rounded-2xl p-8 text-center hover:border-primary-500 hover:bg-primary-50 transition-all cursor-pointer group">
               <input
@@ -121,12 +116,7 @@ export function MintOrSubmit(props: {
               <label htmlFor="image-upload" className="cursor-pointer">
                 {imagePreview ? (
                   <div className="relative w-full aspect-square max-w-xs mx-auto rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src={imagePreview}
-                      alt="Preview"
-                      fill
-                      className="object-cover"
-                    />
+                    <Image src={imagePreview} alt="Preview" fill className="object-cover" />
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity flex items-center justify-center">
                       <Upload
                         className="text-white opacity-0 group-hover:opacity-100 transition-opacity"
@@ -139,12 +129,8 @@ export function MintOrSubmit(props: {
                     <div className="bg-primary-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                       <Upload className="text-primary-600" size={32} />
                     </div>
-                    <p className="text-gray-700 font-medium mb-1">
-                      Click to upload image
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      PNG, JPG, GIF up to 10MB
-                    </p>
+                    <p className="text-gray-700 font-medium mb-1">Click to upload image</p>
+                    <p className="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
                   </div>
                 )}
               </label>
@@ -153,9 +139,7 @@ export function MintOrSubmit(props: {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Description *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Description *</label>
             <textarea
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none resize-none transition-all"
               rows={5}
@@ -192,11 +176,7 @@ export function MintOrSubmit(props: {
                   })
                 }
               />
-              <Button
-                onClick={addAttribute}
-                size="sm"
-                className="flex-shrink-0"
-              >
+              <Button onClick={addAttribute} size="sm" className="flex-shrink-0">
                 <Plus size={20} />
               </Button>
             </div>
@@ -209,9 +189,7 @@ export function MintOrSubmit(props: {
                     className="flex items-center justify-between bg-gradient-to-r from-primary-50 to-purple-50 p-4 rounded-xl border border-primary-200"
                   >
                     <span className="text-sm font-medium">
-                      <strong className="text-primary-700">
-                        {attr.trait_type}:
-                      </strong>{" "}
+                      <strong className="text-primary-700">{attr.trait_type}:</strong>{" "}
                       <span className="text-gray-700">{attr.value}</span>
                     </span>
                     <button
@@ -256,8 +234,8 @@ export function MintOrSubmit(props: {
                   className="mt-1 w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                 />
                 <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                  I certify that I own the copyright to this content and have
-                  the right to mint it as an NFT
+                  I certify that I own the copyright to this content and have the right to mint it
+                  as an NFT
                 </span>
               </label>
             </div>
@@ -272,11 +250,7 @@ export function MintOrSubmit(props: {
             disabled={
               isAdmin
                 ? !description
-                : !name ||
-                  !email ||
-                  !description ||
-                  !termsAccepted ||
-                  !copyrightAccepted
+                : !name || !email || !description || !termsAccepted || !copyrightAccepted
             }
           >
             {uploading ? (

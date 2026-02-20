@@ -1,6 +1,6 @@
 export type Address = `0x${string}`;
 
-export const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
+export const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
 export const ADDRESSES = {
   myNFT: process.env.NEXT_PUBLIC_MYNFT_ADDRESS as Address,
@@ -9,8 +9,7 @@ export const ADDRESSES = {
 
 function assertEnv() {
   if (!ADDRESSES.myNFT) throw new Error("Missing NEXT_PUBLIC_MYNFT_ADDRESS");
-  if (!ADDRESSES.marketplace)
-    throw new Error("Missing NEXT_PUBLIC_MARKETPLACE_ADDRESS");
+  if (!ADDRESSES.marketplace) throw new Error("Missing NEXT_PUBLIC_MARKETPLACE_ADDRESS");
 }
 assertEnv();
 
@@ -155,7 +154,6 @@ export const ERC721Abi = [
   "function tokenURI(uint256 tokenId) external view returns (string memory)",
 ];
 
-
 export type Listing = {
   active: boolean;
   listingId: bigint;
@@ -164,4 +162,4 @@ export type Listing = {
   seller: string;
   tokenId: string;
   tokenURI: string;
-}
+};

@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import { ethers } from "ethers";
 import axios from "axios";
 
-const ABI = [
-  "function tokenURI(uint256 tokenId) view returns (string)"
-];
+const ABI = ["function tokenURI(uint256 tokenId) view returns (string)"];
 
 const RPC_URL = process.env.NEXT_PUBLIC_LOCAL_RPC_URL || "http://127.0.0.1:8545";
 const METADATA_TIMEOUT = parseInt(process.env.METADATA_TIMEOUT || "15000");
@@ -28,11 +26,11 @@ export async function POST(req: Request): Promise<NextResponse<TokenResponse>> {
     const body = await req.json();
 
     if (!body?.nftContract || !body?.tokenId) {
-      console.error("Missing required fields:", { nftContract: body?.nftContract, tokenId: body?.tokenId });
-      return NextResponse.json(
-        { error: "Missing nftContract or tokenId" },
-        { status: 400 }
-      );
+      console.error("Missing required fields:", {
+        nftContract: body?.nftContract,
+        tokenId: body?.tokenId,
+      });
+      return NextResponse.json({ error: "Missing nftContract or tokenId" }, { status: 400 });
     }
 
     const { nftContract, tokenId } = body;
@@ -40,10 +38,7 @@ export async function POST(req: Request): Promise<NextResponse<TokenResponse>> {
     // Validate contract address
     if (!ethers.isAddress(nftContract)) {
       console.error("Invalid contract address:", nftContract);
-      return NextResponse.json(
-        { error: "Invalid contract address" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid contract address" }, { status: 400 });
     }
 
     // Initialize provider
@@ -52,10 +47,7 @@ export async function POST(req: Request): Promise<NextResponse<TokenResponse>> {
       provider = new ethers.JsonRpcProvider(RPC_URL);
     } catch (err) {
       console.error("Failed to initialize provider:", err);
-      return NextResponse.json(
-        { error: "Provider initialization failed" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Provider initialization failed" }, { status: 500 });
     }
 
     const contract = new ethers.Contract(nftContract, ABI, provider);
@@ -90,19 +82,13 @@ export async function POST(req: Request): Promise<NextResponse<TokenResponse>> {
         status: err.response?.status,
         statusText: err.response?.statusText,
       });
-      return NextResponse.json(
-        { error: `Metadata fetch failed: ${err.message}` },
-        { status: 502 }
-      );
+      return NextResponse.json({ error: `Metadata fetch failed: ${err.message}` }, { status: 502 });
     }
 
     // Validate metadata structure
     if (!metadata || typeof metadata !== "object") {
       console.error("Invalid metadata format:", metadata);
-      return NextResponse.json(
-        { error: "Invalid metadata format" },
-        { status: 502 }
-      );
+      return NextResponse.json({ error: "Invalid metadata format" }, { status: 502 });
     }
 
     const image = metadata?.image ? normalizeIpfs(metadata.image) : null;
@@ -122,9 +108,6 @@ export async function POST(req: Request): Promise<NextResponse<TokenResponse>> {
       name: err.name,
     });
 
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

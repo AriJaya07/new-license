@@ -66,7 +66,7 @@ export default function UserSubmit() {
             addAttribute={admin.addAttribute}
             removeAttribute={admin.removeAttribute}
             // handleMintNFT={admin.handleMintNFT}
-            handleMintNFT={ async() => {} }
+            handleMintNFT={async () => {}}
             handleSubmitRequest={admin.handleSubmitRequest}
           />
         ) : (

@@ -44,10 +44,7 @@ export const MarketplaceError = ({ onRetry }: { onRetry: () => void }) => {
           <XCircle className="text-red-600" />
           <div>
             <p className="font-bold">Failed to load listings</p>
-            <button
-              onClick={onRetry}
-              className="mt-3 inline-flex items-center gap-2 text-sm"
-            >
+            <button onClick={onRetry} className="mt-3 inline-flex items-center gap-2 text-sm">
               <RefreshCw size={16} />
               Retry
             </button>
@@ -147,11 +144,8 @@ export const MarketplaceModal = ({
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden">
-
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="font-bold text-lg">
-            NFT #{listing.tokenId.toString()}
-          </h3>
+          <h3 className="font-bold text-lg">NFT #{listing.tokenId.toString()}</h3>
           <button onClick={onClose}>
             <X />
           </button>
@@ -168,8 +162,12 @@ export const MarketplaceModal = ({
             )}
           </div>
 
-          <p><b>Price:</b> {formatEther(BigInt(listing.price))} ETH</p>
-          <p><b>Seller:</b> {listing.seller}</p>
+          <p>
+            <b>Price:</b> {formatEther(BigInt(listing.price))} ETH
+          </p>
+          <p>
+            <b>Seller:</b> {listing.seller}
+          </p>
 
           {error && <p className="text-red-600 text-sm">{error}</p>}
 

@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useAccount } from "wagmi";
 import { Card } from "@/src/common/UI/Card";
 import { Shield } from "lucide-react";
 import NotAdmin from "@/src/components/AdminSubmit/NotAdmin";
@@ -12,15 +10,7 @@ import Link from "next/link";
 import { useAdminSubmit } from "@/src/hooks/useAdminBalance";
 
 export default function AdminSubmit() {
-
-  const { 
-    isAdmin,
-    showBlocked,
-    setShowBlocked,
-    address,
-    isConnected,
-  } = useAdminSubmit()
- 
+  const { isAdmin, showBlocked, setShowBlocked, address, isConnected } = useAdminSubmit();
 
   if (!isConnected) {
     return (
@@ -30,9 +20,7 @@ export default function AdminSubmit() {
             <Shield className="text-white" size={26} />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Only</h1>
-          <p className="mt-2 text-gray-600">
-            Please connect your wallet to check admin access.
-          </p>
+          <p className="mt-2 text-gray-600">Please connect your wallet to check admin access.</p>
           <div className="mt-6 text-xs text-gray-500">
             ADMIN_WALLET: <span className="break-all">{ADMIN_WALLET}</span>
           </div>
@@ -62,12 +50,8 @@ export default function AdminSubmit() {
                 <Shield className="text-white" size={24} />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Admin Dashboard
-                </h1>
-                <p className="text-gray-600 text-sm">
-                  You are logged in as admin wallet.
-                </p>
+                <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p className="text-gray-600 text-sm">You are logged in as admin wallet.</p>
               </div>
             </div>
             <div className="">
@@ -79,9 +63,7 @@ export default function AdminSubmit() {
 
           <div className="mt-6 rounded-xl border border-green-200 bg-green-50 p-4">
             <p className="text-sm text-green-900">
-              <span className="font-semibold break-all">
-                {address?.toLowerCase()}
-              </span>
+              <span className="font-semibold break-all">{address?.toLowerCase()}</span>
             </p>
           </div>
 
@@ -89,5 +71,5 @@ export default function AdminSubmit() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

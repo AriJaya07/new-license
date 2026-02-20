@@ -5,12 +5,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export const Card = ({
-  hover = false,
-  className,
-  children,
-  ...props
-}: CardProps) => {
+export const Card = ({ hover = false, className, children, ...props }: CardProps) => {
   return (
     <div
       className={`bg-white rounded-xl shadow-sm ${

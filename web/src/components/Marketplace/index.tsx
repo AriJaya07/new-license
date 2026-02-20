@@ -1,18 +1,8 @@
-import {
-  ADDRESSES,
-  Listing,
-  MarketplaceAbi,
-  MyNFTAbi,
-} from "@/src/contracts";
+import { ADDRESSES, Listing, MarketplaceAbi, MyNFTAbi } from "@/src/contracts";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useMemo, useState } from "react";
 import { Address, formatEther, isAddress, parseEther } from "viem";
-import {
-  useAccount,
-  useReadContract,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
+import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 function toBigIntSafe(v: string): bigint {
   const n = v.trim();
@@ -116,7 +106,7 @@ export default function Marketplace() {
       abi: MarketplaceAbi,
       functionName: "buyNFT",
       args: [id],
-      value: listing.price,
+      value: toBigIntSafe(listing.price),
     });
 
     setLastHash(hash);
@@ -124,9 +114,7 @@ export default function Marketplace() {
 
   return (
     <div className="mx-auto max-w-[920px] p-6">
-      <h1 className="mb-3 text-[22px] font-bold">
-        NFT Marketplace (Local) — Minimal UI
-      </h1>
+      <h1 className="mb-3 text-[22px] font-bold">NFT Marketplace (Local) — Minimal UI</h1>
 
       <div className="mb-4 flex items-center gap-3">
         <ConnectButton />
@@ -150,11 +138,7 @@ export default function Marketplace() {
           <div>hash: {lastHash ?? "-"}</div>
           <div>confirming: {tx.isLoading ? "yes" : "no"}</div>
           <div>success: {tx.isSuccess ? "yes" : "no"}</div>
-          {tx.error && (
-            <div className="text-red-600">
-              error: {String(tx.error.message)}
-            </div>
-          )}
+          {tx.error && <div className="text-red-600">error: {String(tx.error.message)}</div>}
         </div>
       </section>
 
@@ -163,9 +147,8 @@ export default function Marketplace() {
         <section className="rounded-xl border border-gray-300 p-4">
           <h2 className="mb-2.5 font-semibold">1) Mint (onlyOwner)</h2>
           <p className="mb-3 text-xs text-gray-600">
-            Mint hanya bisa dilakukan wallet owner contract (di local biasanya
-            Account #0). Token URI kamu di contract akan jadi: baseURI +
-            tokenURI.
+            Mint hanya bisa dilakukan wallet owner contract (di local biasanya Account #0). Token
+            URI kamu di contract akan jadi: baseURI + tokenURI.
           </p>
 
           <label className="text-xs">To Address</label>
@@ -176,9 +159,7 @@ export default function Marketplace() {
             className="mt-1.5 mb-2.5 w-full rounded border border-gray-300 p-2.5"
           />
 
-          <label className="text-xs">
-            Token URI (contoh: Qm... atau metadata.json)
-          </label>
+          <label className="text-xs">Token URI (contoh: Qm... atau metadata.json)</label>
           <input
             value={mintUri}
             onChange={(e) => setMintUri(e.target.value)}
@@ -275,9 +256,7 @@ export default function Marketplace() {
             <div>active: {listing ? String(listing.active) : "-"}</div>
             <div>tokenId: {listing ? listing.tokenId.toString() : "-"}</div>
             <div>seller: {listing ? listing.seller : "-"}</div>
-            <div>
-              price: {listing ? `${formatEther(listing.price)} ETH` : "-"}
-            </div>
+            <div>price: {listing ? `${formatEther(toBigIntSafe(listing.price))} ETH` : "-"}</div>
           </div>
 
           <p className="mt-2.5 text-xs text-gray-600">

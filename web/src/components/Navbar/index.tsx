@@ -27,7 +27,7 @@ export default function Navbar() {
     { name: "Marketplace", path: "/marketplace" },
     { name: "Form Submit", path: "/user-form" },
     { name: "Admin", path: "/admin" },
-    { name: "Profile", path: "/profile"},
+    { name: "Profile", path: "/profile" },
   ];
 
   const mobileLinks = [
@@ -36,7 +36,7 @@ export default function Navbar() {
     { name: "Marketplace", path: "/marketplace" },
     { name: "Form Submit", path: "/user-form" },
     { name: "Admin", path: "/admin" },
-    { name: "Profile", path: "/profile"},
+    { name: "Profile", path: "/profile" },
   ];
 
   const isActive = (path: string) => pathname === path;
@@ -57,9 +57,7 @@ export default function Navbar() {
                 aria-label="Homepage"
               >
                 <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-sm" />
-                <span className="font-bold text-gray-900 hidden sm:inline text-lg">
-                  NFT
-                </span>
+                <span className="font-bold text-gray-900 hidden sm:inline text-lg">NFT</span>
               </Link>
 
               {/* Desktop Links */}
@@ -97,11 +95,7 @@ export default function Navbar() {
                 aria-label="Toggle menu"
                 aria-expanded={isMenuOpen}
               >
-                {isMenuOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
@@ -154,9 +148,7 @@ export default function Navbar() {
                   }`}
                 >
                   {link.name}
-                  {isActive(link.path) && (
-                    <span className="w-2 h-2 rounded-full bg-indigo-600" />
-                  )}
+                  {isActive(link.path) && <span className="w-2 h-2 rounded-full bg-indigo-600" />}
                 </Link>
               ))}
             </nav>

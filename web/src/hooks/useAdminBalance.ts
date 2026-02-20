@@ -1,11 +1,10 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useAccount, useBalance, useWriteContract } from "wagmi";
 import { ADMIN_WALLET, ADDRESSES, MarketplaceAbi } from "@/src/contracts";
 import toast from "react-hot-toast";
 
 export const useAdminBalance = () => {
-    const { address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { writeContractAsync } = useWriteContract();
 
   const isAdmin = useMemo(() => {
@@ -25,9 +24,7 @@ export const useAdminBalance = () => {
   });
 
   const hasBalance =
-    balanceData && typeof balanceData.value === "bigint"
-      ? balanceData.value > 0n
-      : false;
+    balanceData && typeof balanceData.value === "bigint" ? balanceData.value > 0n : false;
 
   useEffect(() => {
     if (isConnected && !isAdmin) {
@@ -72,33 +69,33 @@ export const useAdminBalance = () => {
     showBlocked,
     address,
     setShowBlocked,
-    balanceData 
-  }
-}
+    balanceData,
+  };
+};
 
 export const useAdminSubmit = () => {
-    const { address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
 
-    const isAdmin = useMemo(() => {
-      if (!address) return false;
-      return address === ADMIN_WALLET;
-    }, [address]);
-  
-    const [showBlocked, setShowBlocked] = useState(false);
-  
-    useEffect(() => {
-      if (isConnected && !isAdmin) {
-        setShowBlocked(true);
-      } else {
-        setShowBlocked(false);
-      }
-    }, [isConnected, isAdmin]);
+  const isAdmin = useMemo(() => {
+    if (!address) return false;
+    return address === ADMIN_WALLET;
+  }, [address]);
 
-    return {
-        isAdmin,
-        showBlocked,
-        setShowBlocked,
-        address,
-        isConnected,
+  const [showBlocked, setShowBlocked] = useState(false);
+
+  useEffect(() => {
+    if (isConnected && !isAdmin) {
+      setShowBlocked(true);
+    } else {
+      setShowBlocked(false);
     }
-}
+  }, [isConnected, isAdmin]);
+
+  return {
+    isAdmin,
+    showBlocked,
+    setShowBlocked,
+    address,
+    isConnected,
+  };
+};

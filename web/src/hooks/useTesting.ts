@@ -3,13 +3,11 @@ import { ethers } from "ethers";
 
 // Your NFTMarketplace ABI
 const NFTMarketplaceABI = [
-  "function getAllListings() external view returns (tuple(address nftContract, uint256 tokenId, address seller, uint256 price, bool active)[])"
+  "function getAllListings() external view returns (tuple(address nftContract, uint256 tokenId, address seller, uint256 price, bool active)[])",
 ];
 
 // MyNFT ABI
-const MyNFTABI = [
-  "function tokenURI(uint256 tokenId) external view returns (string memory)"
-];
+const MyNFTABI = ["function tokenURI(uint256 tokenId) external view returns (string memory)"];
 
 const useNFTMarketplace = (contractAddress: string) => {
   const [listings, setListings] = useState<any[]>([]);
@@ -36,7 +34,7 @@ const useNFTMarketplace = (contractAddress: string) => {
               nftContract: listing[0], // NFT contract address
               tokenId: listing[1].toString(), // Convert BigInt to string
               seller: listing[2], // Seller address
-            //   price: ethers.utils.formatEther(listing[3].toString()), // Convert Wei to ETH
+              //   price: ethers.utils.formatEther(listing[3].toString()), // Convert Wei to ETH
               price: listing[3].toString(), // Convert Wei to ETH
               active: listing[4], // Active status
               tokenURI: tokenURI, // The token URI for each token

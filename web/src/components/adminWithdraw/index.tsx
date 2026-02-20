@@ -16,20 +16,19 @@ import {
 import { useAdminBalance } from "@/src/hooks/useAdminBalance";
 
 export default function AdminWithdraw() {
-
-    const {  
-        hasBalance,
-        isBalanceLoading,
-        refetchBalance,
-        handleWithdraw,
-        isWithdrawing,
-        isConnected, 
-        isAdmin,
-        showBlocked, 
-        address, 
-        setShowBlocked, 
-        balanceData 
-    } = useAdminBalance()
+  const {
+    hasBalance,
+    isBalanceLoading,
+    refetchBalance,
+    handleWithdraw,
+    isWithdrawing,
+    isConnected,
+    isAdmin,
+    showBlocked,
+    address,
+    setShowBlocked,
+    balanceData,
+  } = useAdminBalance();
 
   if (!isConnected) {
     return (
@@ -39,9 +38,7 @@ export default function AdminWithdraw() {
             <Shield className="text-white" size={26} />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Only</h1>
-          <p className="mt-2 text-gray-600">
-            Please connect your wallet to check admin access.
-          </p>
+          <p className="mt-2 text-gray-600">Please connect your wallet to check admin access.</p>
           <div className="mt-6 text-xs text-gray-500">
             ADMIN_WALLET: <span className="break-all">{ADMIN_WALLET}</span>
           </div>
@@ -72,9 +69,7 @@ export default function AdminWithdraw() {
               <Banknote className="text-white" size={24} />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Marketplace Fees
-              </h1>
+              <h1 className="text-3xl font-bold text-gray-900">Marketplace Fees</h1>
               <p className="text-gray-600 text-sm">
                 View contract balance and withdraw accumulated fees.
               </p>
@@ -84,15 +79,11 @@ export default function AdminWithdraw() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
               <p className="text-sm text-gray-600">Contract</p>
-              <p className="font-semibold text-gray-900 break-all">
-                {ADDRESSES.marketplace}
-              </p>
+              <p className="font-semibold text-gray-900 break-all">{ADDRESSES.marketplace}</p>
             </div>
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
               <p className="text-sm text-gray-600">Admin Wallet</p>
-              <p className="font-semibold text-gray-900 break-all">
-                {address?.toLowerCase()}
-              </p>
+              <p className="font-semibold text-gray-900 break-all">{address?.toLowerCase()}</p>
             </div>
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
               <p className="text-sm text-gray-600">Status</p>
@@ -100,16 +91,12 @@ export default function AdminWithdraw() {
                 {hasBalance ? (
                   <>
                     <CheckCircle2 className="text-green-600" size={18} />
-                    <span className="font-semibold text-green-700">
-                      Fees available
-                    </span>
+                    <span className="font-semibold text-green-700">Fees available</span>
                   </>
                 ) : (
                   <>
                     <AlertCircle className="text-amber-600" size={18} />
-                    <span className="font-semibold text-amber-700">
-                      No fees yet
-                    </span>
+                    <span className="font-semibold text-amber-700">No fees yet</span>
                   </>
                 )}
               </div>
@@ -128,8 +115,7 @@ export default function AdminWithdraw() {
                     </span>
                   ) : (
                     <>
-                      {balanceData?.formatted ?? "0"}{" "}
-                      {balanceData?.symbol ?? "ETH"}
+                      {balanceData?.formatted ?? "0"} {balanceData?.symbol ?? "ETH"}
                     </>
                   )}
                 </p>

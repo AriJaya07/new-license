@@ -2,12 +2,7 @@ import { AlertTriangle, Home, X } from "lucide-react";
 import { Button } from "@/src/common/UI/Button";
 import { useRouter } from "next/navigation";
 
-export default function NotAdmin({
-  showBlocked,
-  address,
-  setShowBlocked,
-  adminWallet,
-}: any) {
+export default function NotAdmin({ showBlocked, address, setShowBlocked, adminWallet }: any) {
   const router = useRouter();
 
   return (
@@ -28,9 +23,7 @@ export default function NotAdmin({
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">Access denied</h3>
-                  <p className="text-xs text-gray-600">
-                    This page is for admin wallet only.
-                  </p>
+                  <p className="text-xs text-gray-600">This page is for admin wallet only.</p>
                 </div>
               </div>
 
@@ -56,9 +49,7 @@ export default function NotAdmin({
               <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
                 <p className="text-sm text-amber-900">
                   Required admin wallet:
-                  <span className="block font-semibold break-all mt-1">
-                    {adminWallet}
-                  </span>
+                  <span className="block font-semibold break-all mt-1">{adminWallet}</span>
                 </p>
               </div>
 
@@ -76,10 +67,7 @@ export default function NotAdmin({
                 <Home size={18} />
                 Go Home
               </Button>
-              <Button
-                onClick={() => router.push("/")}
-                className="w-full sm:w-auto"
-              >
+              <Button onClick={() => router.push("/")} className="w-full sm:w-auto">
                 Back to /
               </Button>
             </div>

@@ -8,27 +8,25 @@ import { AddressNotConnect, ModalProfileDetail } from "./common";
 import { normalizeIpfs } from "@/src/utils/common";
 
 export default function MyNfts() {
-    const { 
-        address,
-        isConnected,
-        activeTab,
-        setActiveTab,
-        stats,
-        filteredListings,
-        selectedNFT,
-        setSelectedNFT,
-        copied,
-        handleCopy,
-        profileData,
-      } = useProfile()
+  const {
+    address,
+    isConnected,
+    activeTab,
+    setActiveTab,
+    stats,
+    filteredListings,
+    selectedNFT,
+    setSelectedNFT,
+    copied,
+    handleCopy,
+    profileData,
+  } = useProfile();
 
-      if (!isConnected) {
-        return (
-            <AddressNotConnect />
-        );
-      }
-    return (
-     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+  if (!isConnected) {
+    return <AddressNotConnect />;
+  }
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
       <Toaster position="top-right" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,14 +46,14 @@ export default function MyNfts() {
                       {formatAddress(address)}
                     </code>
                     <button
-                        onClick={() => handleCopy(address)}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                        >
-                        {copied ? (
-                            <CheckCircle size={18} className="text-green-600" />
-                        ) : (
-                            <Copy size={18} className="text-gray-600" />
-                        )}
+                      onClick={() => handleCopy(address)}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      {copied ? (
+                        <CheckCircle size={18} className="text-green-600" />
+                      ) : (
+                        <Copy size={18} className="text-gray-600" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -93,7 +91,9 @@ export default function MyNfts() {
             }`}
           >
             Owned ({stats.owned})
-            {activeTab === "owned" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"></div>}
+            {activeTab === "owned" && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"></div>
+            )}
           </button>
           <button
             onClick={() => setActiveTab("listed")}
@@ -102,7 +102,9 @@ export default function MyNfts() {
             }`}
           >
             Listed ({stats.listed})
-            {activeTab === "listed" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"></div>}
+            {activeTab === "listed" && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"></div>
+            )}
           </button>
         </div>
 
@@ -123,9 +125,9 @@ export default function MyNfts() {
 
         {/* Modal Popup */}
         {selectedNFT && (
-            <ModalProfileDetail selectedNFT={selectedNFT} setSelectedNFT={setSelectedNFT} />
+          <ModalProfileDetail selectedNFT={selectedNFT} setSelectedNFT={setSelectedNFT} />
         )}
       </div>
     </div>
-    )
+  );
 }
