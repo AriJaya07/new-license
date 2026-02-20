@@ -7,24 +7,20 @@ import { Shield } from "lucide-react";
 import NotAdmin from "@/src/components/AdminSubmit/NotAdmin";
 import FormAdmin from "./FormAdmin";
 import { ADMIN_WALLET } from "@/src/contracts";
+import { Button } from "@/src/common/UI/Button";
+import Link from "next/link";
+import { useAdminSubmit } from "@/src/hooks/useAdminBalance";
 
 export default function AdminSubmit() {
-  const { address, isConnected } = useAccount();
 
-  const isAdmin = useMemo(() => {
-    if (!address) return false;
-    return address === ADMIN_WALLET;
-  }, [address]);
-
-  const [showBlocked, setShowBlocked] = useState(false);
-
-  useEffect(() => {
-    if (isConnected && !isAdmin) {
-      setShowBlocked(true);
-    } else {
-      setShowBlocked(false);
-    }
-  }, [isConnected, isAdmin]);
+  const { 
+    isAdmin,
+    showBlocked,
+    setShowBlocked,
+    address,
+    isConnected,
+  } = useAdminSubmit()
+ 
 
   if (!isConnected) {
     return (
@@ -60,17 +56,24 @@ export default function AdminSubmit() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="p-8 shadow-xl border border-gray-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="bg-gradient-to-br from-primary-500 to-purple-600 p-3 rounded-2xl">
-              <Shield className="text-white" size={24} />
+          <div className="flex flex-row justify-between items-center">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-gradient-to-br from-primary-500 to-purple-600 p-3 rounded-2xl">
+                <Shield className="text-white" size={24} />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Admin Dashboard
+                </h1>
+                <p className="text-gray-600 text-sm">
+                  You are logged in as admin wallet.
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Admin Dashboard
-              </h1>
-              <p className="text-gray-600 text-sm">
-                You are logged in as admin wallet.
-              </p>
+            <div className="">
+              <Link href={"/admin/balance"}>
+                <Button className="!bg-gray-100 !font-bold">Balance</Button>
+              </Link>
             </div>
           </div>
 

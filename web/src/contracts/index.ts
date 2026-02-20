@@ -134,6 +134,20 @@ export const MarketplaceAbi = [
       },
     ],
   },
+  {
+    type: "function",
+    name: "getMarketplaceFee",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "withdrawFees",
+    stateMutability: "nonpayable",
+    inputs: [],
+    outputs: [],
+  },
 ] as const;
 
 // ERC721 ABI to call `tokenURI`
